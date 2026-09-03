@@ -1,0 +1,120 @@
+name: xhblogs
+
+services:
+  # ------------------------------------------------------------------
+  # MySQL：全站唯一数据源
+  # ------------------------------------------------------------------
+  mysql:
+    image: mysql:8.0
+    container_name: xhblogs-mysql
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=caching_sha2_password
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?请在 .env 中设置 MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-xhblogs}
+      MYSQL_USER: ${MYSQL_USER:-xhblogs}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?请在 .env 中设置 MYSQL_PASSWORD}
+      TZ: ${TZ:-Asia/Shanghai}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      # 仅在数据卷为空时执行一次：建表 + 导入初始内容
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      - xhblogs
+
+  # ------------------------------------------------------------------
+  # FastAPI 后端：唯一写库方，只在内网暴露
+  # ------------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+    container_name: xhblogs-backend
+    restart: unless-stopped
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-xhblogs}
+      MYSQL_USER: ${MYSQL_USER:-xhblogs}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      CMS_TOKEN: ${CMS_TOKEN:?请在 .env 中设置 CMS_TOKEN}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?请在 .env 中设置 ADMIN_PASSWORD}
+      BLOG_REVALIDATE_URL: http://blog:3000/api/revalidate
+      REVALIDATE_TOKEN: ${REVALIDATE_TOKEN:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      TZ: ${TZ:-Asia/Shanghai}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - xhblogs
+
+  # ------------------------------------------------------------------
+  # 博客前台：根路由是搜索起始页，/home 是博客主页
+  # ------------------------------------------------------------------
+  blog:
+    build:
+      context: ./blog
+    container_name: xhblogs-blog
+    restart: unless-stopped
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-xhblogs}
+      MYSQL_USER: ${MYSQL_USER:-xhblogs}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      REVALIDATE_TOKEN: ${REVALIDATE_TOKEN:-}
+      TZ: ${TZ:-Asia/Shanghai}
+    ports:
+      - "${BLOG_PORT:-3000}:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - xhblogs
+
+  # ------------------------------------------------------------------
+  # 管理控制台：浏览器访问，需登录；对后端的请求经 /cms 反代
+  # ------------------------------------------------------------------
+  manager:
+    build:
+      context: ./manager
+    container_name: xhblogs-manager
+    restart: unless-stopped
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-xhblogs}
+      MYSQL_USER: ${MYSQL_USER:-xhblogs}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      CMS_INTERNAL_URL: http://backend:8000
+      CMS_TOKEN: ${CMS_TOKEN}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      SESSION_SECRET: ${SESSION_SECRET:?请在 .env 中设置 SESSION_SECRET}
+      # 纯 HTTP 访问时必须为 false，否则浏览器不回传会话 Cookie，会一直跳回登录页
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      TZ: ${TZ:-Asia/Shanghai}
+    ports:
+      - "${MANAGER_PORT:-3001}:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      backend:
+        condition: service_started
+    networks:
+      - xhblogs
+
+volumes:
+  mysql-data:
+
+networks:
+  xhblogs:
+    driver: bridge

@@ -1,0 +1,16 @@
+# 真实部署配置，含密码与密钥，绝对不能提交
+.env
+.env.local
+.env.*.local
+
+# 本地预览用的临时数据库
+.devdb/
+
+# Python
+backend/.venv/
+backend/**/__pycache__/
+backend/**/*.pyc
+
+# Node / Next.js（各子项目自带 .gitignore，这里再兜一层底）
+node_modules/
+.next/

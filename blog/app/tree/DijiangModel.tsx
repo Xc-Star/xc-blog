@@ -2,7 +2,7 @@
 
 import { Suspense, useMemo, useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Rocket, Loader2, FileText, MessageCircle, Lightbulb, ChevronLeft, ChevronRight, Layers, ChevronDown, ShieldAlert, AlertTriangle, Crosshair, Activity, Cpu, Camera, Users, Grid, X, LockKeyhole, Shield } from 'lucide-react';
+import { Rocket, Loader2, FileText, MessageCircle, Lightbulb, ChevronLeft, ChevronRight, Layers, ChevronDown, AlertTriangle, Crosshair, Activity, Cpu, Camera, Users, Grid, X, LockKeyhole, Shield } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import * as THREE from 'three';
 
@@ -156,11 +156,10 @@ const StackedTacticalHUD = ({ records, color, categoryName, isImageStyle, router
                 ) : (
                   <div key={r.id} onClick={() => handleItemClick(r)} className="relative w-full shrink-0 p-4 bg-[#222] border-l-2 hover:bg-[#2a2a2a] cursor-pointer shadow-md transition-colors text-left flex flex-col gap-2 rounded-xl" style={{ borderColor: color }}>
                     <div className="text-[10px] text-slate-400 font-mono">
-                      {r.type === 'message' && r.author ? `ID: ${r.author} // ` : ''}
                       {formatDisplayDate(r.date)}
                     </div>
                     <div className="text-xs font-bold text-slate-200 leading-relaxed whitespace-pre-wrap line-clamp-3">
-                      {(r.type === 'moment' || r.type === 'message') ? (r.content || r.title) : r.title}
+                      {r.type === 'moment' ? (r.content || r.title) : r.title}
                     </div>
                   </div>
                 )
@@ -188,11 +187,10 @@ const StackedTacticalHUD = ({ records, color, categoryName, isImageStyle, router
                   ) : (
                     <>
                        <div className="text-[10px] text-slate-400 font-mono text-right mb-1">
-                          {r.type === 'message' && r.author ? `ID: ${r.author} // ` : ''}
                           {formatDisplayDate(r.date)}
                        </div>
                        <div className="text-xs font-bold text-slate-200 line-clamp-2 text-right leading-relaxed">
-                         {(r.type === 'moment' || r.type === 'message') ? (r.content || r.title) : r.title}
+                         {r.type === 'moment' ? (r.content || r.title) : r.title}
                        </div>
                     </>
                   )}
@@ -312,8 +310,6 @@ const HologramShip = ({ activeCategory, currentRecords, router }: any) => {
                          isActive={activeCategory === 'chatter'} records={currentRecords.filter((r:any) => r.type === 'chatter')} isImageStyle={true} router={router} />
           <TacticalPoint position={[-2.3, 0, 1.5]} color="#10b981" categoryName="BEACON"
                          isActive={activeCategory === 'moment'} records={currentRecords.filter((r:any) => r.type === 'moment')} isImageStyle={false} router={router} />
-          <TacticalPoint position={[-2.3, -0.5, 1.5]} color="#f1f5f9" categoryName="RECEPTION"
-                         isActive={activeCategory === 'message'} records={currentRecords.filter((r:any) => r.type === 'message')} isImageStyle={false} router={router} />
         </group>
       </group>
     </Float>
@@ -330,8 +326,6 @@ export default function DijiangModel({ posts = [], chatters = [], moments = [] }
   const [showCatalog, setShowCatalog] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
-
-  const realWishes: any[] = [];
 
   // RPG 数据结算
   const rpgStats = useMemo(() => {
@@ -488,7 +482,7 @@ export default function DijiangModel({ posts = [], chatters = [], moments = [] }
   const [year, month] = currentMonthStr.split('-');
   const formattedMonth = `RECORD.Y${year.substring(2)}M${parseInt(month)}`;
 
-  const [activeCategory, setActiveCategory] = useState<'post' | 'chatter' | 'moment' | 'message' | null>(null);
+  const [activeCategory, setActiveCategory] = useState<'post' | 'chatter' | 'moment' | null>(null);
 
   const currentMonthRecords = useMemo(() => {
     const formatted = [...posts, ...chatters, ...moments].map(r => ({
@@ -496,15 +490,14 @@ export default function DijiangModel({ posts = [], chatters = [], moments = [] }
       image: r.cover || r.image || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1000&auto=format&fit=crop',
       content: r.content
     })).filter(r => r.date.startsWith(currentMonthStr));
-    return [...formatted, ...realWishes];
-  }, [currentMonthStr, posts, chatters, moments, realWishes]);
+    return formatted;
+  }, [currentMonthStr, posts, chatters, moments]);
 
   const countPost = currentMonthRecords.filter(r => r.type === 'post').length;
   const countChatter = currentMonthRecords.filter(r => r.type === 'chatter').length;
   const countMoment = currentMonthRecords.filter(r => r.type === 'moment').length;
-  const countMessage = currentMonthRecords.filter(r => r.type === 'message').length;
 
-  const handleCategoryClick = (cat: 'post' | 'chatter' | 'moment' | 'message', count: number) => {
+  const handleCategoryClick = (cat: 'post' | 'chatter' | 'moment', count: number) => {
     if (count === 0) {
       setSysTip(`[ SYSTEM ALERT ] 该区域暂无数据归档`);
       setActiveCategory(null);
@@ -765,11 +758,6 @@ export default function DijiangModel({ posts = [], chatters = [], moments = [] }
             <div className={`p-2 ${activeCategory === 'moment' ? 'bg-black/20' : 'bg-[#111] border border-[#333] text-[#10b981]'}`}><Lightbulb size={16} /></div>
             <div className="text-left flex-1"><div className="text-sm font-bold tracking-wider">BEACON</div><div className={`text-[9px] font-mono ${activeCategory === 'moment' ? 'text-black/60' : 'text-slate-500'}`}>观测信标</div></div>
           </button>
-
-          <button onClick={() => handleCategoryClick('message', countMessage)} className={`flex items-center gap-4 w-60 p-2 border transition-all duration-300 backdrop-blur-md shadow-sm ${activeCategory === 'message' ? 'bg-[#f1f5f9] border-[#f1f5f9] text-[#111]' : 'bg-[#1e1e1e]/80 border-[#333] hover:bg-[#2a2a2a] text-slate-300'}`}>
-            <div className={`p-2 ${activeCategory === 'message' ? 'bg-black/20' : 'bg-[#111] border border-[#333] text-[#f1f5f9]'}`}><ShieldAlert size={16} /></div>
-            <div className="text-left flex-1"><div className="text-sm font-bold tracking-wider">RECEPTION</div><div className={`text-[9px] font-mono ${activeCategory === 'message' ? 'text-black/60' : 'text-slate-500'}`}>访客申请</div></div>
-          </button>
         </div>
 
         <div className="absolute bottom-6 right-4 md:right-10 z-30 pointer-events-auto flex flex-col items-end gap-3">
@@ -791,10 +779,6 @@ export default function DijiangModel({ posts = [], chatters = [], moments = [] }
                   <div className="flex items-center justify-between text-xs font-mono text-slate-300">
                     <span className="flex items-center gap-1.5 font-bold"><span className="w-1.5 h-1.5 bg-[#10b981]"></span> BEACON</span>
                     <span className="font-bold text-[#10b981] text-sm">{countMoment}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs font-mono text-slate-300">
-                    <span className="flex items-center gap-1.5 font-bold"><span className="w-1.5 h-1.5 bg-[#f1f5f9]"></span> MSG</span>
-                    <span className="font-bold text-[#f1f5f9] text-sm">{countMessage}</span>
                   </div>
                 </motion.div>
               </AnimatePresence>

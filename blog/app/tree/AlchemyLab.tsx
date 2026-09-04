@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 // 🌟 引入了新的图标 Camera, Users, Sprout
-import { MessageCircleHeart, ChevronLeft, ChevronRight, BookOpen, ScrollText, Coffee, FileText, Sparkles, Award, Shield, X, Grid, LockKeyhole, Camera, Users, Sprout } from 'lucide-react';
+import { ChevronLeft, ChevronRight, BookOpen, ScrollText, Coffee, FileText, Sparkles, Award, Shield, X, Grid, LockKeyhole, Camera, Users, Sprout } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 // 🌟 引入站点配置
@@ -73,13 +73,7 @@ const MagicTooltip = ({ title, type, content, author, color }: any) => (
       <div className="absolute bottom-0 w-3/4 h-[1px]" style={{ background: `linear-gradient(90deg, transparent, ${color}, transparent)` }} />
       <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-[#231a16]/95 border-t border-l border-[#8b6b4a]/60 rotate-45" />
 
-      {type === 'wish' ? (
-        <>
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-2" style={{ color }}>— 访客留言 —</p>
-          <p className="text-sm text-[#e8e4d9] font-serif italic text-center leading-relaxed">「 {content} 」</p>
-          <p className="text-[10px] text-[#8b6b4a] mt-3 text-right w-full">— {author}</p>
-        </>
-      ) : type === 'moment' ? (
+      {type === 'moment' ? (
         <>
           <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-2" style={{ color }}>— 📗 瞬间思绪 —</p>
           <p className="text-sm text-[#e8e4d9] font-serif italic text-center leading-relaxed line-clamp-4">
@@ -156,33 +150,12 @@ const LiquidFlask = ({ item, router }: { item: any; router: any }) => {
 };
 
 // ==========================================
-// 🌟 3. 便利贴纸
-// ==========================================
-const StickyNote = ({ note }: { note: any }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  return (
-    <motion.div
-      initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-      whileHover={{ scale: 1.2, zIndex: 110, rotate: 0 }}
-      onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}
-      className={`absolute ${note.color} p-4 shadow-lg cursor-pointer flex flex-col items-center justify-center border border-black/5 z-30`}
-      style={{ width: '110px', height: '110px', [note.side]: `${note.offsetOut}px`, top: `${note.offsetY}px`, rotate: `${note.rotation}deg`, boxShadow: '4px 6px 15px rgba(0,0,0,0.2)' }}
-    >
-      <AnimatePresence>{isHovered && <MagicTooltip content={note.content} author={note.author} type="wish" color="#ec4899" />}</AnimatePresence>
-      <div className="absolute -top-3 w-12 h-5 bg-white/50 backdrop-blur-md shadow-sm rotate-3" style={{ clipPath: 'polygon(2% 10%, 98% 5%, 95% 90%, 5% 95%)' }} />
-      <p className="text-xs font-bold text-slate-800 leading-snug line-clamp-3 text-center opacity-80" style={{ fontFamily: 'cursive, sans-serif' }}>{note.content}</p>
-    </motion.div>
-  );
-};
-
-// ==========================================
-// 🌟 4. 核心实验室组件 (完全体)
+// 🌟 3. 核心实验室组件 (完全体)
 // ==========================================
 export default function AlchemyLab({ posts = [], chatters = [], moments = [] }: any) {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
-  const realWishes: any[] = [];
 
   // 控制图鉴面板的开关
   const [showCatalog, setShowCatalog] = useState(false);
@@ -356,8 +329,8 @@ export default function AlchemyLab({ posts = [], chatters = [], moments = [] }: 
   const cnMonths = ['零','壹','贰','叁','肆','伍','陆','柒','捌','玖','拾','拾壹','拾贰'];
   const formattedMonth = `${year} 卷${cnMonths[parseInt(month)] || month}`;
 
-  const { shelvesData, stickyNotes, stats } = useMemo(() => {
-    if (!mounted) return { shelvesData: [], stickyNotes: [], stats: { post: 0, chatter: 0, moment: 0, wish: 0 } };
+  const { shelvesData, stats } = useMemo(() => {
+    if (!mounted) return { shelvesData: [], stats: { post: 0, chatter: 0, moment: 0 } };
 
     const isCurrentMonth = (dateStr: string) => dateStr && dateStr.startsWith(currentMonthStr);
     const currentPosts = posts.filter((i: any) => isCurrentMonth(i.date));
@@ -365,7 +338,7 @@ export default function AlchemyLab({ posts = [], chatters = [], moments = [] }: 
     const currentMoments = moments.filter((i: any) => isCurrentMonth(i.date));
     const currentFlasks = [...currentPosts, ...currentChatters, ...currentMoments];
 
-    const monthStats = { post: currentPosts.length, chatter: currentChatters.length, moment: currentMoments.length, wish: realWishes.length };
+    const monthStats = { post: currentPosts.length, chatter: currentChatters.length, moment: currentMoments.length };
 
     const shuffled = currentFlasks
       .map((item, i) => {
@@ -383,25 +356,8 @@ export default function AlchemyLab({ posts = [], chatters = [], moments = [] }: 
     const shelves = [];
     for (let i = 0; i < totalShelves; i++) shelves.push(shuffled.slice(i * itemsPerShelf, (i + 1) * itemsPerShelf));
 
-    const colors = ['bg-yellow-200', 'bg-pink-200', 'bg-blue-200', 'bg-emerald-200'];
-    const positionCounter: Record<string, number> = {};
-
-    const computedNotes = realWishes.map((wish, i) => {
-      const seed = i * 10 + parseInt(currentMonthStr.replace('-',''));
-      const shelfIndex = Math.floor(seededRandom(seed) * totalShelves);
-      const side = seededRandom(seed + 1) > 0.5 ? 'left' : 'right';
-      const key = `${shelfIndex}-${side}`;
-      if (positionCounter[key] === undefined) positionCounter[key] = 0;
-      const localIndex = positionCounter[key]++;
-      return {
-        ...wish, shelfIndex, side, color: colors[Math.floor(seededRandom(seed + 2) * colors.length)],
-        rotation: (seededRandom(seed + 3) * 40) - 20, offsetY: -40 + (localIndex * 50) + (seededRandom(seed + 4) * 10),
-        offsetOut: -110 - (localIndex * 10) - (seededRandom(seed + 5) * 10)
-      };
-    });
-
-    return { shelvesData: shelves, stickyNotes: computedNotes, stats: monthStats };
-  }, [currentMonthStr, posts, chatters, moments, realWishes, mounted]);
+    return { shelvesData: shelves, stats: monthStats };
+  }, [currentMonthStr, posts, chatters, moments, mounted]);
 
   if (!mounted) return <div className="min-h-[80vh] flex items-center justify-center text-[#8b6b4a]">加载魔力网络中...</div>;
 
@@ -646,7 +602,6 @@ export default function AlchemyLab({ posts = [], chatters = [], moments = [] }: 
                 <div className="w-full max-w-4xl flex items-end justify-around relative z-10 pb-[10px]">
                   {shelfItems.map((item) => <LiquidFlask key={item.id} item={item} router={router} />)}
                 </div>
-                {stickyNotes.filter(n => n.shelfIndex === idx).map(note => <StickyNote key={note.id} note={note} />)}
                 <div className="absolute bottom-0 left-[5%] right-[5%] h-[14px] bg-gradient-to-b from-[#4a3628] to-[#2c1e16] border-b-[6px] border-[#1a110b] rounded-sm shadow-[0_15px_30px_-5px_rgba(0,0,0,0.8)] z-0"><div className="absolute top-0 left-0 w-full h-[1px] bg-white/10" /></div>
                 <div className="absolute -bottom-6 left-[15%] w-4 h-6 bg-[#2c1e16] rounded-b-lg shadow-xl border-x border-[#5d4037]/20" />
                 <div className="absolute -bottom-6 right-[15%] w-4 h-6 bg-[#2c1e16] rounded-b-lg shadow-xl border-x border-[#5d4037]/20" />

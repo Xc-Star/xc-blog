@@ -2,16 +2,25 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Bot, Sparkles, Sliders, MessageSquareText, Cpu } from 'lucide-react';
+import { Save, Bot, Sparkles, Sliders, MessageSquareText, Cpu, Link2, KeyRound, RefreshCcw } from 'lucide-react';
+import { cmsJson } from '@/lib/cmsApi';
+import { useToast } from '../ToastProvider';
 
 export default function AICatSection({ formData, handleUpdate, saveConfig }: any) {
+  const { showToast } = useToast();
+
   // 防止 undefined
   const config = formData.geminiConfig || {
-    modelId: 'gemini-2.5-flash-lite',
+    baseUrl: 'https://api.openai.com/v1',
+    apiKey: '',
+    modelId: '',
     systemPrompt: '',
     maxOutputTokens: 150,
     temperature: 0.85
   };
+
+  const [models, setModels] = useState<string[]>([]);
+  const [isLoadingModels, setIsLoadingModels] = useState(false);
 
   // 🌟 核心防崩魔法：将系统提示词的状态独立出来
   const [localPrompt, setLocalPrompt] = useState('');
@@ -25,6 +34,31 @@ export default function AICatSection({ formData, handleUpdate, saveConfig }: any
 
   const updateConfig = (key: string, value: any) => {
     handleUpdate('geminiConfig', { ...config, [key]: value });
+  };
+
+  const fetchModels = async () => {
+    if (!config.baseUrl?.trim() || !config.apiKey?.trim()) {
+      showToast('请先填写接口地址和 API Key', 'warning');
+      return;
+    }
+    setIsLoadingModels(true);
+    try {
+      const data = await cmsJson<{ success: boolean; models?: string[]; message?: string }>('/api/ai/models', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ baseUrl: config.baseUrl, apiKey: config.apiKey })
+      });
+      if (data.success && data.models) {
+        setModels(data.models);
+        showToast(`✅ ${data.message}`, 'success');
+      } else {
+        showToast(`❌ ${data.message}`, 'error');
+      }
+    } catch (error: any) {
+      showToast(`❌ 获取失败：${error.message}`, 'error');
+    } finally {
+      setIsLoadingModels(false);
+    }
   };
 
   // 🌟 拦截文本框输入
@@ -64,19 +98,65 @@ export default function AICatSection({ formData, handleUpdate, saveConfig }: any
       </div>
 
       <div className="grid grid-cols-1 gap-8">
-        {/* 模型 ID */}
+        {/* 接口地址 */}
         <div className="group">
           <label className="flex items-center gap-2 text-sm font-black text-slate-700 dark:text-slate-300 mb-3">
-            <Cpu size={16} className="text-slate-400 group-focus-within:text-indigo-500 transition-colors" /> 模型核心引擎 (Model ID)
+            <Link2 size={16} className="text-slate-400 group-focus-within:text-indigo-500 transition-colors" /> 接口地址 (Base URL)
           </label>
           <input
             type="text"
-            value={config.modelId}
+            value={config.baseUrl || ''}
+            onChange={(e) => updateConfig('baseUrl', e.target.value)}
+            className="w-full bg-white/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl py-3.5 px-5 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 font-medium"
+            placeholder="例如: https://api.openai.com/v1"
+          />
+          <p className="text-[11px] text-slate-400 mt-2 ml-1">任意 OpenAI 兼容端点，通常以 /v1 结尾（会请求 /chat/completions 与 /models）。</p>
+        </div>
+
+        {/* API Key */}
+        <div className="group">
+          <label className="flex items-center gap-2 text-sm font-black text-slate-700 dark:text-slate-300 mb-3">
+            <KeyRound size={16} className="text-slate-400 group-focus-within:text-indigo-500 transition-colors" /> API Key
+          </label>
+          <input
+            type="password"
+            value={config.apiKey || ''}
+            onChange={(e) => updateConfig('apiKey', e.target.value)}
+            className="w-full bg-white/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl py-3.5 px-5 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 font-medium"
+            placeholder="sk-..."
+          />
+          <p className="text-[11px] text-slate-400 mt-2 ml-1">仅服务端使用，不会下发到博客前台页面。</p>
+        </div>
+
+        {/* 模型 ID */}
+        <div className="group">
+          <div className="flex justify-between items-center mb-3">
+            <label className="flex items-center gap-2 text-sm font-black text-slate-700 dark:text-slate-300">
+              <Cpu size={16} className="text-slate-400 group-focus-within:text-indigo-500 transition-colors" /> 模型核心引擎 (Model)
+            </label>
+            <button
+              onClick={fetchModels}
+              disabled={isLoadingModels}
+              className="px-3 py-1.5 rounded-xl bg-indigo-500/10 text-indigo-500 text-[11px] font-black hover:bg-indigo-500 hover:text-white transition-all disabled:opacity-50 flex items-center gap-1.5"
+            >
+              <RefreshCcw size={12} className={isLoadingModels ? 'animate-spin' : ''} />
+              {isLoadingModels ? '获取中...' : '获取模型列表'}
+            </button>
+          </div>
+          <input
+            type="text"
+            list="ai-model-options"
+            value={config.modelId || ''}
             onChange={(e) => updateConfig('modelId', e.target.value)}
             className="w-full bg-white/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl py-3.5 px-5 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 font-medium"
-            placeholder="例如: gemini-2.5-flash-lite"
+            placeholder="点击右上角获取列表，或直接填写模型 ID"
           />
-          <p className="text-[11px] text-slate-400 mt-2 ml-1">推荐使用默认的轻量级模型，响应速度最快。</p>
+          <datalist id="ai-model-options">
+            {models.map(m => <option key={m} value={m} />)}
+          </datalist>
+          <p className="text-[11px] text-slate-400 mt-2 ml-1">
+            {models.length > 0 ? `已加载 ${models.length} 个可选模型，点击输入框可下拉选择。` : '推荐使用轻量级模型，响应速度最快。'}
+          </p>
         </div>
 
         {/* System Prompt */}

@@ -1,72 +1,71 @@
-// app/api/chat/route.ts
-import { siteConfig } from '../../../siteConfig'; // 确保这里的路径指向你的 siteConfig
+import { getSiteConfig } from '../../../lib/content.server';
 
-export const runtime = 'edge';
+// 需要查库读取密钥，因此不能跑在 edge runtime
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
+type AiConfig = {
+  baseUrl?: string;
+  apiKey?: string;
+  modelId?: string;
+  systemPrompt?: string;
+  maxOutputTokens?: number;
+  temperature?: number;
+};
 
 export async function POST(req: Request) {
-  console.log("🚀 [1/5] 路由进入：开始对接 Gemini 3 脑回路");
-
   try {
     const { message } = await req.json();
-
-    // 🌟 纯粹靠环境变量读取 API Key
-    const apiKey = (process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY || '').trim();
-
-    if (!apiKey) {
-      console.error("❌ 找不到 API Key");
-      return new Response(JSON.stringify({ error: "Key missing" }), { status: 500 });
+    if (typeof message !== 'string' || !message.trim()) {
+      return Response.json({ error: '消息不能为空' }, { status: 400 });
     }
 
-    // 调用 siteConfig 的参数
-    const modelId = siteConfig.geminiConfig.modelId;
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`;
+    const site = await getSiteConfig();
+    const config = (site.geminiConfig ?? {}) as AiConfig;
 
-    console.log(`📡 [2/5] 正在呼叫模型: ${modelId}`);
+    const baseUrl = (config.baseUrl || '').trim().replace(/\/+$/, '');
+    const apiKey = (config.apiKey || '').trim();
+    const model = (config.modelId || '').trim();
 
-    const response = await fetch(url, {
+    if (!baseUrl || !apiKey || !model) {
+      return Response.json({ error: '尚未在管理端配置 AI 接口地址 / 密钥 / 模型' }, { status: 503 });
+    }
+
+    // 管理端把物理换行存成了字面量 \n，这里还原
+    const systemPrompt = (config.systemPrompt || '').replace(/\\n/g, '\n').trim();
+
+    const response = await fetch(`${baseUrl}/chat/completions`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
       body: JSON.stringify({
-        system_instruction: {
-          parts: [{
-            text: siteConfig.geminiConfig.systemPrompt
-          }]
-        },
-        contents: [{
-          parts: [{ text: message }]
-        }],
-        generationConfig: {
-          maxOutputTokens: siteConfig.geminiConfig.maxOutputTokens,
-          temperature: siteConfig.geminiConfig.temperature,
-        }
-      })
+        model,
+        messages: [
+          ...(systemPrompt ? [{ role: 'system', content: systemPrompt }] : []),
+          { role: 'user', content: message.slice(0, 2000) },
+        ],
+        max_tokens: config.maxOutputTokens ?? 150,
+        temperature: config.temperature ?? 0.85,
+      }),
     });
 
-    const data = await response.json();
+    const data = await response.json().catch(() => null);
 
     if (!response.ok) {
-      console.error("🚨 Gemini 3 拒绝了请求:", JSON.stringify(data));
-      return new Response(JSON.stringify({
-        error: `模型拒绝访问: ${response.status}`,
-        details: data.error?.message || "未知错误"
-      }), { status: response.status });
+      console.error('[chat] 模型接口拒绝请求:', response.status, data?.error?.message);
+      return Response.json(
+        { error: `模型接口返回 ${response.status}`, details: data?.error?.message || '未知错误' },
+        { status: response.status },
+      );
     }
 
-    console.log("✅ [3/5] Google 成功响应");
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "本喵现在不想理你喵...";
-
-    console.log("🎉 [4/5] 回复已生成，准备传回前端");
-
-    return new Response(JSON.stringify({ reply }), {
-      headers: { 'Content-Type': 'application/json' }
-    });
-
-  } catch (error: any) {
-    console.error("🔥 [5/5] 运行时崩溃:", error.message);
-    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+    const reply = data?.choices?.[0]?.message?.content?.trim() || '本喵现在不想理你喵...';
+    return Response.json({ reply });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : '未知错误';
+    console.error('[chat] 运行时异常:', message);
+    return Response.json({ error: message }, { status: 500 });
   }
-}
-
-export async function GET() {
-  return new Response(JSON.stringify({ status: "Ready", model: "Gemini 3 Flash Preview" }), { status: 200 });
 }

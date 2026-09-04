@@ -4,7 +4,7 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from cms_core.api import auth as login_auth
-from cms_core.api import config, drafts, friends, gallery, moments, music, picbed, projects, sync
+from cms_core.api import ai, config, drafts, friends, gallery, moments, music, picbed, projects, sync
 from cms_core.auth import auth_enabled, log_auth_status, require_token
 from cms_core.db import database_label, fetch_one, wait_for_db
 
@@ -46,4 +46,5 @@ app.include_router(friends.router, prefix="/api/friends", tags=["Friends"], depe
 app.include_router(projects.router, prefix="/api/projects", tags=["Projects"], dependencies=protected)
 app.include_router(moments.router, prefix="/api/moments", tags=["Moments"], dependencies=protected)
 app.include_router(sync.router, prefix="/api/sync", tags=["Sync"], dependencies=protected)
+app.include_router(ai.router, prefix="/api/ai", tags=["AI"], dependencies=protected)
 app.include_router(login_auth.router, prefix="/api/auth", tags=["Auth"], dependencies=protected)

@@ -158,6 +158,25 @@ export async function getProjects() {
   }));
 }
 
+/** 这些字段会被注入浏览器的快照蕴含，只允许服务端读取。 */
+const CLIENT_HIDDEN_KEYS = ['picBedToken'];
+const CLIENT_HIDDEN_NESTED_KEYS: Record<string, string[]> = { geminiConfig: ['apiKey', 'systemPrompt'] };
+
+function stripSecrets(site: Record<string, unknown>): Record<string, unknown> {
+  const safe = { ...site };
+  for (const key of CLIENT_HIDDEN_KEYS) delete safe[key];
+  for (const [parent, fields] of Object.entries(CLIENT_HIDDEN_NESTED_KEYS)) {
+    const value = safe[parent];
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      const clone = { ...(value as Record<string, unknown>) };
+      for (const field of fields) delete clone[field];
+      safe[parent] = clone;
+    }
+  }
+  return safe;
+}
+
+/** 含密钥的完整配置，仅限服务端（如 route handler）使用。 */
 export async function getSiteConfig(): Promise<Record<string, unknown>> {
   const rows = await query<{ config_key: string; config_value: unknown }>(
     'SELECT config_key, config_value FROM site_config',
@@ -185,7 +204,7 @@ export async function loadRuntime(): Promise<RuntimeSnapshot> {
     getProjects(),
   ]);
 
-  const snapshot: RuntimeSnapshot = { site, albums, friends, projects };
+  const snapshot: RuntimeSnapshot = { site: stripSecrets(site), albums, friends, projects };
   setRuntime(snapshot);
   return snapshot;
 }

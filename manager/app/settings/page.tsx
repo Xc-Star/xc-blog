@@ -49,7 +49,9 @@ function SettingsContent() {
     footerBadges: [...(siteConfig.footerBadges || [])],
     // 👇 🌟 初始化小猫 AI 配置数据
     geminiConfig: siteConfig.geminiConfig || {
-      modelId: 'gemini-2.5-flash-lite',
+      baseUrl: 'https://api.openai.com/v1',
+      apiKey: '',
+      modelId: '',
       systemPrompt: '',
       maxOutputTokens: 150,
       temperature: 0.85

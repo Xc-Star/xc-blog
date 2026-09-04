@@ -1,4 +1,4 @@
-name: xhblogs
+name: xcblogs
 
 services:
   # ------------------------------------------------------------------
@@ -6,7 +6,7 @@ services:
   # ------------------------------------------------------------------
   mysql:
     image: mysql:8.0
-    container_name: xhblogs-mysql
+    container_name: xcblogs-mysql
     restart: unless-stopped
     command:
       - --character-set-server=utf8mb4
@@ -14,8 +14,8 @@ services:
       - --default-authentication-plugin=caching_sha2_password
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?请在 .env 中设置 MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-xhblogs}
-      MYSQL_USER: ${MYSQL_USER:-xhblogs}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-xcblogs}
+      MYSQL_USER: ${MYSQL_USER:-xcblogs}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:?请在 .env 中设置 MYSQL_PASSWORD}
       TZ: ${TZ:-Asia/Shanghai}
     volumes:
@@ -29,7 +29,7 @@ services:
       retries: 12
       start_period: 30s
     networks:
-      - xhblogs
+      - xcblogs
 
   # ------------------------------------------------------------------
   # FastAPI 后端：唯一写库方，只在内网暴露
@@ -37,13 +37,13 @@ services:
   backend:
     build:
       context: ./backend
-    container_name: xhblogs-backend
+    container_name: xcblogs-backend
     restart: unless-stopped
     environment:
       MYSQL_HOST: mysql
       MYSQL_PORT: 3306
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-xhblogs}
-      MYSQL_USER: ${MYSQL_USER:-xhblogs}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-xcblogs}
+      MYSQL_USER: ${MYSQL_USER:-xcblogs}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       CMS_TOKEN: ${CMS_TOKEN:?请在 .env 中设置 CMS_TOKEN}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:?请在 .env 中设置 ADMIN_PASSWORD}
@@ -53,7 +53,7 @@ services:
       mysql:
         condition: service_healthy
     networks:
-      - xhblogs
+      - xcblogs
 
   # ------------------------------------------------------------------
   # 博客前台：根路由是搜索起始页，/home 是博客主页
@@ -61,13 +61,13 @@ services:
   blog:
     build:
       context: ./blog
-    container_name: xhblogs-blog
+    container_name: xcblogs-blog
     restart: unless-stopped
     environment:
       MYSQL_HOST: mysql
       MYSQL_PORT: 3306
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-xhblogs}
-      MYSQL_USER: ${MYSQL_USER:-xhblogs}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-xcblogs}
+      MYSQL_USER: ${MYSQL_USER:-xcblogs}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: ${TZ:-Asia/Shanghai}
     ports:
@@ -76,7 +76,7 @@ services:
       mysql:
         condition: service_healthy
     networks:
-      - xhblogs
+      - xcblogs
 
   # ------------------------------------------------------------------
   # 管理控制台：浏览器访问，需登录；对后端的请求经 /cms 反代
@@ -84,13 +84,13 @@ services:
   manager:
     build:
       context: ./manager
-    container_name: xhblogs-manager
+    container_name: xcblogs-manager
     restart: unless-stopped
     environment:
       MYSQL_HOST: mysql
       MYSQL_PORT: 3306
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-xhblogs}
-      MYSQL_USER: ${MYSQL_USER:-xhblogs}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-xcblogs}
+      MYSQL_USER: ${MYSQL_USER:-xcblogs}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       CMS_INTERNAL_URL: http://backend:8000
       CMS_TOKEN: ${CMS_TOKEN}
@@ -107,11 +107,11 @@ services:
       backend:
         condition: service_started
     networks:
-      - xhblogs
+      - xcblogs
 
 volumes:
   mysql-data:
 
 networks:
-  xhblogs:
+  xcblogs:
     driver: bridge

@@ -38,7 +38,7 @@ export default function DanmakuBackground() {
   return (
     // 终极限制：去掉了 bottom-0，换成了 h-[30vh] 强制锁死容器高度！
     // 并且加上 z-0 确保它在卡片矩阵的后面
-    <div className="fixed top-28 h-[30vh] left-0 right-0 overflow-hidden pointer-events-none z-0">
+    <div className="fx-layer fixed top-28 h-[30vh] left-0 right-0 overflow-hidden pointer-events-none z-0">
       {danmakus.map((item) => (
         <div
           key={item.id}
@@ -55,14 +55,13 @@ export default function DanmakuBackground() {
 
       <style dangerouslySetInnerHTML={{
         __html: `
+        /* 位移完全交给 transform：同样的行程，但不再逐帧触发回流与重绘 */
         @keyframes float-left {
           0% {
-            right: -100%;
-            transform: translateX(100%);
+            transform: translate3d(100%, 0, 0);
           }
           100% {
-            right: 100%;
-            transform: translateX(-100%);
+            transform: translate3d(calc(-100% - 200vw), 0, 0);
           }
         }
       `}} />

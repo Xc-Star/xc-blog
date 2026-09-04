@@ -24,7 +24,7 @@ export default function Sakura() {
   }, []);
 
   return (
-    <div className="fixed inset-0 w-full h-full pointer-events-none z-10 overflow-hidden">
+    <div className="fx-layer fixed inset-0 w-full h-full pointer-events-none z-10 overflow-hidden">
       <style>{`
         @keyframes sakuraFall {
           0% { transform: translate(0, -10vh) rotate(0deg); opacity: 0; }

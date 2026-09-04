@@ -10,11 +10,21 @@ export default function ClickEffect() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let ripples: any[] = [];
+    const ripples: Ripple[] = [];
+    let rafId = 0;
+    let cssW = 0;
+    let cssH = 0;
 
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      // 上限 2 倍像素比：高分屏下不至于为一层装饰画布吞掉成倍的填充率
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cssW = window.innerWidth;
+      cssH = window.innerHeight;
+      canvas.width = Math.round(cssW * dpr);
+      canvas.height = Math.round(cssH * dpr);
+      canvas.style.width = `${cssW}px`;
+      canvas.style.height = `${cssH}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     window.addEventListener('resize', resize);
     resize();
@@ -22,7 +32,6 @@ export default function ClickEffect() {
     class Ripple {
       x: number; y: number;
       r: number;        // 半径
-      maxR: number;     // 最大半径
       opacity: number;  // 透明度
       velocity: number; // 扩散速度
 
@@ -30,7 +39,6 @@ export default function ClickEffect() {
         this.x = x;
         this.y = y;
         this.r = 0;
-        this.maxR = 60;   // 涟漪扩散的大小，60 比较克制
         this.opacity = 0.6;
         this.velocity = 2.5;
       }
@@ -60,34 +68,34 @@ export default function ClickEffect() {
       }
     }
 
-    const handleClick = (e: MouseEvent) => {
-      ripples.push(new Ripple(e.clientX, e.clientY));
-    };
-
-    window.addEventListener('click', handleClick);
-
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, cssW, cssH);
 
       // 增加全局模糊，让涟漪更有“云端”质感
       ctx.shadowBlur = 15;
       ctx.shadowColor = 'rgba(129, 140, 248, 0.5)';
 
-      for (let i = 0; i < ripples.length; i++) {
+      for (let i = ripples.length - 1; i >= 0; i--) {
         ripples[i].update();
         ripples[i].draw();
-        if (ripples[i].opacity <= 0) {
-          ripples.splice(i, 1);
-          i--;
-        }
+        if (ripples[i].opacity <= 0) ripples.splice(i, 1);
       }
-      requestAnimationFrame(animate);
+
+      // 涟漪散完就停机，不再逐帧空转清全屏
+      rafId = ripples.length > 0 ? requestAnimationFrame(animate) : 0;
     };
-    animate();
+
+    const handleClick = (e: MouseEvent) => {
+      ripples.push(new Ripple(e.clientX, e.clientY));
+      if (!rafId) rafId = requestAnimationFrame(animate);
+    };
+
+    window.addEventListener('click', handleClick, { passive: true });
 
     return () => {
       window.removeEventListener('resize', resize);
       window.removeEventListener('click', handleClick);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 

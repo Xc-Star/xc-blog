@@ -41,70 +41,61 @@ export default function Fireflies() {
   }, []);
 
   return (
-    <div className="fixed inset-0 w-full h-full pointer-events-none z-10 overflow-hidden mix-blend-screen">
+    <div className="fx-layer fixed inset-0 w-full h-full pointer-events-none z-10 overflow-hidden mix-blend-screen">
 
       {/* 动画引擎 */}
       <style>{`
-        /* 内层：纯粹的光芒呼吸闪烁 */
+        /* 呼吸闪烁：用独立的 scale 属性，才能和下面的 translate 动画共存于同一元素 */
         @keyframes fireflyBreathe {
           0%, 100% { 
             opacity: 0; 
-            transform: scale(0.3);
+            scale: 0.3;
           }
           50% { 
             opacity: 1; 
-            transform: scale(1.2); 
-            box-shadow: 0 0 10px 3px rgba(100, 255, 150, 0.8), 0 0 20px 6px rgba(50, 255, 100, 0.4);
+            scale: 1.2; 
           }
         }
 
-        /* 外层：四种不同的大范围随机漂浮轨迹 (利用 vw 和 vh 跨越屏幕) */
+        /* 四种不同的大范围随机漂浮轨迹 (利用 vw 和 vh 跨越屏幕) */
         @keyframes float1 {
-          0%, 100% { transform: translate(0, 0); }
-          33% { transform: translate(10vw, -15vh); }
-          66% { transform: translate(-5vw, -20vh); }
+          0%, 100% { translate: 0 0; }
+          33% { translate: 10vw -15vh; }
+          66% { translate: -5vw -20vh; }
         }
         @keyframes float2 {
-          0%, 100% { transform: translate(0, 0); }
-          33% { transform: translate(-12vw, 10vh); }
-          66% { transform: translate(8vw, 15vh); }
+          0%, 100% { translate: 0 0; }
+          33% { translate: -12vw 10vh; }
+          66% { translate: 8vw 15vh; }
         }
         @keyframes float3 {
-          0%, 100% { transform: translate(0, 0); }
-          33% { transform: translate(15vw, 15vh); }
-          66% { transform: translate(-10vw, 5vh); }
+          0%, 100% { translate: 0 0; }
+          33% { translate: 15vw 15vh; }
+          66% { translate: -10vw 5vh; }
         }
         @keyframes float4 {
-          0%, 100% { transform: translate(0, 0); }
-          33% { transform: translate(-15vw, -10vh); }
-          66% { transform: translate(10vw, -15vh); }
+          0%, 100% { translate: 0 0; }
+          33% { translate: -15vw -10vh; }
+          66% { translate: 10vw -15vh; }
         }
       `}</style>
 
       {flies.map(fly => (
-        // 【外层容器】：负责在屏幕上极其缓慢地游荡飞行
+        // 漫游与呼吸合并到同一个元素上：translate 走轨迹，scale/opacity 管呼吸，互不冲突
         <div
           key={fly.id}
-          className="absolute"
+          className="absolute rounded-full"
           style={{
             top: fly.top,
             left: fly.left,
-            animation: `${fly.floatPath} ${fly.floatDuration}s ease-in-out infinite`,
-            animationDelay: `${fly.floatDelay}s`,
+            width: `${fly.size}px`,
+            height: `${fly.size}px`,
+            backgroundColor: 'rgba(200, 255, 200, 0.9)',
+            boxShadow: '0 0 10px 3px rgba(100, 255, 150, 0.8), 0 0 20px 6px rgba(50, 255, 100, 0.4)',
+            animation: `${fly.floatPath} ${fly.floatDuration}s ease-in-out infinite, fireflyBreathe ${fly.breatheDuration}s ease-in-out infinite`,
+            animationDelay: `${fly.floatDelay}s, ${fly.breatheDelay}s`,
           }}
-        >
-          {/* 【内层元素】：负责自身发光、变大和透明度呼吸 */}
-          <div
-            className="rounded-full"
-            style={{
-              width: `${fly.size}px`,
-              height: `${fly.size}px`,
-              backgroundColor: 'rgba(200, 255, 200, 0.9)',
-              animation: `fireflyBreathe ${fly.breatheDuration}s ease-in-out infinite`,
-              animationDelay: `${fly.breatheDelay}s`,
-            }}
-          ></div>
-        </div>
+        ></div>
       ))}
     </div>
   );

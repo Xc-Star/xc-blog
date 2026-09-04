@@ -31,11 +31,6 @@
     --tw-prose-links: var(--color-indigo-400);
   }
 
-  [class*="backdrop-blur-"] {
-    will-change: backdrop-filter;
-    -webkit-backdrop-filter: blur(12px);
-  }
-
   .group:hover img {
     will-change: transform;
   }
@@ -53,10 +48,6 @@ input[type=range]::-webkit-slider-thumb {
 
 /* 4. 火狐专项优化与布局兜底 */
 @layer base {
-  [class*="backdrop-blur-"] {
-    will-change: backdrop-filter;
-  }
-
   @-moz-document url-prefix() {
     [class*="backdrop-blur-md"] {
       backdrop-filter: blur(8px) !important;
@@ -120,3 +111,20 @@ input[type="number"] {
 .custom-scrollbar::-webkit-scrollbar { width: 6px; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.2); border-radius: 10px; }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.4); }
+
+/* ========================================================
+   装饰特效层的渲染隔离
+   ======================================================== */
+
+/* 把粒子层的布局/绘制关在自己子树里，避免每帧连带整页重算 */
+.fx-layer {
+  contain: layout style paint;
+}
+
+/* 淡出结束后才打上：不可见的特效不再占用合成与动画开销 */
+.fx-dormant {
+  visibility: hidden;
+}
+.fx-dormant * {
+  animation-play-state: paused !important;
+}

@@ -104,6 +104,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
               <style suppressHydrationWarning dangerouslySetInnerHTML={{ __html: `
                 @keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
                 body.winter-mode .bg-effects-wrapper { opacity: 0 !important; visibility: hidden; }
+                body.winter-mode .bg-effects-wrapper * { animation-play-state: paused !important; }
                 .winter-mode .snow-cap { position: relative !important; overflow: visible !important; }
                 .dark.winter-mode .snow-cap {
                   background-color: rgba(23, 37, 84, 0.4) !important;

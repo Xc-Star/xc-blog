@@ -41,11 +41,13 @@ export default function Fireflies() {
   }, []);
 
   return (
-    <div className="fixed inset-0 w-full h-full pointer-events-none z-10 overflow-hidden mix-blend-screen">
+    <div className="fx-layer fixed inset-0 w-full h-full pointer-events-none z-10 overflow-hidden mix-blend-screen">
 
       {/* 动画引擎 */}
       <style>{`
-        /* 内层：纯粹的光芒呼吸闪烁 */
+        /* 内层：纯粹的光芒呼吸闪烁
+           光晕改成静态 box-shadow，随 opacity/scale 一起呈现，
+           避免逐帧重算阴影带来的全屏重绘 */
         @keyframes fireflyBreathe {
           0%, 100% { 
             opacity: 0; 
@@ -54,7 +56,6 @@ export default function Fireflies() {
           50% { 
             opacity: 1; 
             transform: scale(1.2); 
-            box-shadow: 0 0 10px 3px rgba(100, 255, 150, 0.8), 0 0 20px 6px rgba(50, 255, 100, 0.4);
           }
         }
 
@@ -100,6 +101,7 @@ export default function Fireflies() {
               width: `${fly.size}px`,
               height: `${fly.size}px`,
               backgroundColor: 'rgba(200, 255, 200, 0.9)',
+              boxShadow: '0 0 10px 3px rgba(100, 255, 150, 0.8), 0 0 20px 6px rgba(50, 255, 100, 0.4)',
               animation: `fireflyBreathe ${fly.breatheDuration}s ease-in-out infinite`,
               animationDelay: `${fly.breatheDelay}s`,
             }}

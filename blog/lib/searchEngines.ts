@@ -1,4 +1,4 @@
-export type SuggestProvider = 'baidu' | 'google' | 'none';
+export type SuggestProvider = 'baidu' | 'google' | 'duckduckgo' | 'none';
 
 export type SearchEngine = {
   id: string;
@@ -37,6 +37,14 @@ export const searchEngines: SearchEngine[] = [
     placeholder: 'Search with Google…',
     accent: '#ea4335',
     suggest: 'google',
+  },
+  {
+    id: 'duckduckgo',
+    name: 'DuckDuckGo',
+    url: 'https://duckduckgo.com/?q=',
+    placeholder: '不追踪、不画像的搜索…',
+    accent: '#de5833',
+    suggest: 'duckduckgo',
   },
   {
     id: 'github',

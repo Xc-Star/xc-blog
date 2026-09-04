@@ -63,6 +63,25 @@ async function googleSuggest(query: string): Promise<string[]> {
   }
 }
 
+async function duckduckgoSuggest(query: string): Promise<string[]> {
+  const url = `https://duckduckgo.com/ac/?kl=wt-wt&type=list&q=${encodeURIComponent(query)}`;
+  const res = await fetchWithTimeout(url, 3500);
+  if (!res || !res.ok) return [];
+  try {
+    // type=list 返回 ["query", [...]]，接口偶尔回落成 [{ phrase }]
+    const parsed = JSON.parse(await res.text());
+    if (Array.isArray(parsed?.[1])) return parsed[1] as string[];
+    if (Array.isArray(parsed)) {
+      return parsed
+        .map((item: unknown) => (item && typeof item === 'object' ? (item as { phrase?: string }).phrase : undefined))
+        .filter((item): item is string => typeof item === 'string');
+    }
+    return [];
+  } catch {
+    return [];
+  }
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const query = (searchParams.get('q') ?? '').trim();
@@ -75,6 +94,9 @@ export async function GET(request: Request) {
   let suggestions: string[] = [];
   if (provider === 'google') {
     suggestions = await googleSuggest(query);
+    if (suggestions.length === 0) suggestions = await baiduSuggest(query);
+  } else if (provider === 'duckduckgo') {
+    suggestions = await duckduckgoSuggest(query);
     if (suggestions.length === 0) suggestions = await baiduSuggest(query);
   } else {
     suggestions = await baiduSuggest(query);

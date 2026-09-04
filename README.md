@@ -130,7 +130,7 @@ docker compose down -v && docker compose up -d --build
 
 根路由 `/` 是搜索起始页，包含时钟、问候语、一言、多引擎搜索框，**没有底部工具栏**。
 
-- 内置必应 / 百度 / Google / GitHub / 知乎 / 哔哩哔哩 / 维基百科，可在 `blog/lib/searchEngines.ts` 里增删改。
+- 内置必应 / 百度 / Google / DuckDuckGo / GitHub / 知乎 / 哔哩哔哩 / 维基百科，可在 `blog/lib/searchEngines.ts` 里增删改。
 - 搜索联想经由 `blog/app/api/suggest/route.ts` 服务端代理，避开浏览器跨域限制。
 - 输入内容像网址时（如 `github.com`）会直接跳转而不是搜索。
 - 快捷键：`/` 或 `Ctrl/Cmd + K` 聚焦，`Tab` 切换引擎，`↑ ↓` 选联想词，`Esc` 清空。

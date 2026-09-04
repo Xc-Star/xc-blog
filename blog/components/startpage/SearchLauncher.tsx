@@ -11,18 +11,24 @@ import {
   findEngine,
   searchEngines,
 } from '../../lib/searchEngines';
+import EngineLogo from './EngineLogo';
 
 const ENGINE_STORAGE_KEY = 'xh-start-engine';
 const NEWTAB_STORAGE_KEY = 'xh-start-newtab';
 
-export default function SearchLauncher() {
+export default function SearchLauncher({
+  expanded,
+  onExpandedChange,
+}: {
+  expanded: boolean;
+  onExpandedChange: (value: boolean) => void;
+}) {
   const [engineId, setEngineId] = useState(defaultEngineId);
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [enginePickerOpen, setEnginePickerOpen] = useState(false);
   const [openInNewTab, setOpenInNewTab] = useState(true);
-  const [focused, setFocused] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -145,6 +151,7 @@ export default function SearchLauncher() {
       } else {
         setQuery('');
         inputRef.current?.blur();
+        onExpandedChange(false);
       }
     }
   };
@@ -177,36 +184,38 @@ export default function SearchLauncher() {
         setEnginePickerOpen(false);
         setSuggestions([]);
         setActiveIndex(-1);
+        onExpandedChange(false);
       }
     };
     document.addEventListener('mousedown', onPointerDown);
     return () => document.removeEventListener('mousedown', onPointerDown);
-  }, []);
+  }, [onExpandedChange]);
 
   return (
     <motion.div
       ref={rootRef}
+      layout="position"
       initial={{ opacity: 0, y: 28 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, delay: 0.12, ease: 'easeOut' }}
-      className="w-full max-w-2xl relative"
+      transition={{ duration: 0.7, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+      className={`w-full relative transition-[max-width] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        expanded ? 'max-w-3xl' : 'max-w-2xl'
+      }`}
     >
       {/* 搜索主体 */}
-      <div
-        className="relative flex items-center gap-1 sm:gap-2 rounded-full bg-white/45 dark:bg-slate-800/55 backdrop-blur-xl border border-white/50 dark:border-white/10 shadow-[0_10px_40px_rgba(15,23,42,0.18)] transition-all duration-300 pl-2 pr-2 py-2"
-        style={focused ? { boxShadow: `0 12px 45px ${engine.accent}44`, borderColor: `${engine.accent}66` } : undefined}
-      >
+      <div className="relative flex items-center gap-1 sm:gap-2 rounded-full bg-white/45 dark:bg-slate-800/55 backdrop-blur-xl border border-white/50 dark:border-white/10 shadow-[0_10px_40px_rgba(15,23,42,0.18)] pl-2 pr-2 py-2">
         {/* 引擎切换 */}
         <button
           type="button"
           onClick={() => setEnginePickerOpen((prev) => !prev)}
-          className="flex items-center gap-1 shrink-0 h-10 pl-4 pr-2 rounded-full font-bold text-sm text-white transition-all duration-300 hover:brightness-110 active:scale-95"
+          className="flex items-center gap-1 shrink-0 h-10 pl-3.5 pr-2 rounded-full text-white transition-all duration-300 hover:brightness-110 active:scale-95"
           style={{ backgroundColor: engine.accent }}
           aria-haspopup="listbox"
           aria-expanded={enginePickerOpen}
-          aria-label="切换搜索引擎"
+          aria-label={`切换搜索引擎（当前：${engine.name}）`}
+          title={engine.name}
         >
-          {engine.name}
+          <EngineLogo engine={engine} size={20} />
           <ChevronDown
             size={16}
             className={`transition-transform duration-300 ${enginePickerOpen ? 'rotate-180' : ''}`}
@@ -219,8 +228,7 @@ export default function SearchLauncher() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           onKeyDown={handleKeyDown}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
+          onFocus={() => onExpandedChange(true)}
           placeholder={engine.placeholder}
           spellCheck={false}
           autoComplete="off"
@@ -258,10 +266,10 @@ export default function SearchLauncher() {
       <AnimatePresence>
         {enginePickerOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -8, scale: 0.97 }}
+            initial={{ opacity: 0, y: -10, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.97 }}
-            transition={{ duration: 0.18 }}
+            exit={{ opacity: 0, y: -10, scale: 0.97 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
             className="absolute z-30 mt-2 w-full rounded-3xl bg-white/70 dark:bg-slate-800/80 backdrop-blur-xl border border-white/50 dark:border-white/10 shadow-2xl p-3"
           >
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -272,14 +280,17 @@ export default function SearchLauncher() {
                     key={item.id}
                     type="button"
                     onClick={() => selectEngine(item.id)}
-                    className={`px-3 py-2 rounded-2xl text-sm font-bold transition-all duration-200 border ${
+                    className={`flex items-center gap-2 px-3 py-2 rounded-2xl text-sm font-bold transition-all duration-200 border ${
                       active
                         ? 'text-white border-transparent shadow-md scale-[1.02]'
                         : 'text-slate-700 dark:text-slate-200 bg-white/60 dark:bg-slate-700/50 border-white/50 dark:border-white/10 hover:scale-[1.03]'
                     }`}
                     style={active ? { backgroundColor: item.accent } : undefined}
                   >
-                    {item.name}
+                    <span style={active ? undefined : { color: item.accent }} className="flex">
+                      <EngineLogo engine={item} size={18} />
+                    </span>
+                    <span className="truncate">{item.name}</span>
                   </button>
                 );
               })}
@@ -309,10 +320,10 @@ export default function SearchLauncher() {
       <AnimatePresence>
         {!enginePickerOpen && suggestions.length > 0 && (
           <motion.ul
-            initial={{ opacity: 0, y: -8 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.18 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
             className="absolute z-20 mt-2 w-full rounded-3xl bg-white/70 dark:bg-slate-800/80 backdrop-blur-xl border border-white/50 dark:border-white/10 shadow-2xl overflow-hidden py-2"
             role="listbox"
           >

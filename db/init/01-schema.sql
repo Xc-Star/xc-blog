@@ -145,3 +145,4 @@ CREATE TABLE IF NOT EXISTS admin_users (
   PRIMARY KEY (id),
   UNIQUE KEY uk_admin_users_username (username)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+

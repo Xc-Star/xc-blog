@@ -20,7 +20,6 @@ import { siteConfig } from '../../../siteConfig';
 import ClientSocials from '../../../components/ClientSocials';
 import SidebarLyric from '../../../components/SidebarLyric';
 import BackButton from '../../../components/BackButton';
-import Comments from '../../../components/Comments';
 import { getDocument, getDocuments } from '../../../lib/content.server';
 
 async function getChatterData(slug: string) {
@@ -290,7 +289,6 @@ export default async function ChatterDetail({ params }: { params: Promise<{ slug
               </div>
 
               <div className="mt-10 md:mt-12">
-                <Comments />
               </div>
 
             </div>

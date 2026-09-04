@@ -19,7 +19,6 @@ import { siteConfig } from '../../../siteConfig';
 import ClientSocials from '../../../components/ClientSocials';
 import ClientTOC from '../../../components/ClientTOC';
 import BackButton from '../../../components/BackButton';
-import Comments from '../../../components/Comments';
 import SidebarLyric from '../../../components/SidebarLyric';
 import { getDocument, getDocuments } from '../../../lib/content.server';
 
@@ -238,10 +237,6 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
                   className="prose prose-slate dark:prose-invert prose-base md:prose-lg max-w-none text-slate-800 dark:text-slate-200 transition-colors duration-700 scroll-smooth"
                   dangerouslySetInnerHTML={{ __html: postData.contentHtml }}
                 />
-              </div>
-
-              <div className="mt-12 md:mt-16">
-                <Comments />
               </div>
 
             </div>

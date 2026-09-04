@@ -4,7 +4,6 @@ import { cmsJson } from '@/lib/cmsApi';
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import { MapPin, MessageSquare, Clock, Sparkles, Search, ArrowDownAZ, ArrowUpZA, ChevronLeft, ChevronRight, Ghost, Plus, Image as ImageIcon, X, Link as LinkIcon, Zap, Trash2, AlertTriangle } from 'lucide-react';
-import MomentComments from '../../components/MomentComments';
 import { useToast } from '../../components/ToastProvider';
 import { siteConfig } from '../../siteConfig';
 
@@ -20,7 +19,6 @@ function timeAgo(dateStr: string) {
 
 export default function MomentList({ moments, authorName, avatarUrl }: any) {
   const [liveMoments, setLiveMoments] = useState<any[]>(moments || []);
-  const [openCommentId, setOpenCommentId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
   const [lightbox, setLightbox] = useState<{ images: string[], index: number } | null>(null);
@@ -265,21 +263,7 @@ export default function MomentList({ moments, authorName, avatarUrl }: any) {
         <div className="min-w-0 flex-1">
           {moment.location && <span className="inline-flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 max-w-full truncate border border-indigo-500/10"><MapPin size={12} /> {moment.location}</span>}
         </div>
-        <button onClick={() => setOpenCommentId(openCommentId === moment.id ? null : moment.id)} className={`w-10 h-10 flex items-center justify-center shrink-0 rounded-full transition-all shadow-sm ${openCommentId === moment.id ? 'bg-indigo-500 text-white shadow-indigo-500/30 rotate-12' : 'bg-white/80 dark:bg-slate-800 text-slate-400 hover:text-indigo-500 hover:bg-slate-100 dark:hover:bg-slate-700'}`}>
-          <MessageSquare size={16} />
-        </button>
       </div>
-
-      <AnimatePresence>
-        {openCommentId === moment.id && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1, marginTop: 24 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-            <div className="bg-slate-50/50 dark:bg-slate-900/50 rounded-3xl p-6 border border-slate-200/50 dark:border-slate-700/50 relative shadow-inner">
-              <div className="absolute -top-2 right-8 w-4 h-4 bg-slate-50/50 dark:bg-slate-900/50 rotate-45 border-l border-t border-slate-200/50"></div>
-              <MomentComments id={`/moments/${moment.id}`} />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.div>
   );
 

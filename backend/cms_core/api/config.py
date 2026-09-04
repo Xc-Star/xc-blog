@@ -7,7 +7,7 @@ VALID_ROOT_KEYS = {
     "title", "authorName", "bio", "avatarUrl", "useGradient", "themeColors",
     "bgImages", "defaultPostCover", "photoWallImage", "cloudMusicIds", "social",
     "counts", "chatterTitle", "chatterDescription", "picBedName", "picBedUrl",
-    "picBedToken", "danmakuList", "gitalkConfig", "buildDate", "footerBadges",
+    "picBedToken", "danmakuList", "buildDate", "footerBadges",
     "icpConfig", "geminiConfig", "faviconUrl", "navTitle", "navSuffix", "navAfter",
     "friendLinkApplyFormat", "enableLevelSystem"
 }

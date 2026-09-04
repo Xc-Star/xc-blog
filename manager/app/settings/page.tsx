@@ -14,7 +14,6 @@ import MusicSection from '../../components/settings/MusicSection';
 import GallerySection from '../../components/settings/GallerySection';
 import RepoSection from '../../components/settings/RepoSection';
 import DisplaySection from '../../components/settings/DisplaySection';
-import CommentSection from '../../components/settings/CommentSection';
 import DanmakuSection from '../../components/settings/DanmakuSection';
 import FooterSection from '../../components/settings/FooterSection';
 // 👇 🌟 引入刚写的 AI 配置组件
@@ -35,13 +34,6 @@ function SettingsContent() {
     social: siteConfig.social || {},
     cloudMusicIds: [...(siteConfig.cloudMusicIds || [])],
     bgImages: [...(siteConfig.bgImages || [])],
-    gitalkConfig: siteConfig.gitalkConfig || {
-      clientID: '',
-      clientSecret: '',
-      repo: '',
-      owner: '',
-      admin: []
-    },
     newMusicId: '',
     danmakuList: [...(siteConfig.danmakuList || [])],
     buildDate: siteConfig.buildDate || "2026-03-23T00:00:00",
@@ -73,7 +65,6 @@ function SettingsContent() {
             ...prev,
             ...data.data,
             social: { ...(prev.social || {}), ...(data.data.social || {}) },
-            gitalkConfig: { ...(prev.gitalkConfig || {}), ...(data.data.gitalkConfig || {}) },
             danmakuList: data.data.danmakuList ? [...data.data.danmakuList] : prev.danmakuList,
             buildDate: data.data.buildDate || prev.buildDate,
             icpConfig: data.data.icpConfig || prev.icpConfig,
@@ -196,7 +187,6 @@ function SettingsContent() {
     { id: 'gallery', name: '图库配置管理', icon: '🖼️' },
     { id: 'footer', name: '首页底部设置', icon: '🧩' },
     { id: 'danmaku', name: '全站弹幕设置', icon: '⚡' },
-    { id: 'comment', name: '评论系统配置', icon: '💬' },
     { id: 'aicat', name: 'AI 煤球配置', icon: '🐾' }, // 👈 新增的小猫设置
     { id: 'password', name: '管理密码', icon: '🔐' },
     { id: 'repo', name: '项目仓库设置', icon: '🚀' },
@@ -237,7 +227,6 @@ function SettingsContent() {
               {activeTab === 'gallery' && <GallerySection key="gallery" formData={formData} handleUpdate={handleUpdate} saveConfig={saveConfig} />}
               {activeTab === 'footer' && <FooterSection key="footer" formData={formData} handleUpdate={handleUpdate} saveConfig={saveConfig} />}
               {activeTab === 'danmaku' && <DanmakuSection key="danmaku" formData={formData} handleUpdate={handleUpdate} saveConfig={saveConfig} />}
-              {activeTab === 'comment' && <CommentSection key="comment" formData={formData} handleUpdate={handleUpdate} saveConfig={saveConfig} />}
               {/* 👇 🌟 挂载 AI 猫咪面板 */}
               {activeTab === 'aicat' && <AICatSection key="aicat" formData={formData} handleUpdate={handleUpdate} saveConfig={saveConfig} />}
               {activeTab === 'password' && <PasswordSection key="password" />}

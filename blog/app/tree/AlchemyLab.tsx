@@ -6,8 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircleHeart, ChevronLeft, ChevronRight, BookOpen, ScrollText, Coffee, FileText, Sparkles, Award, Shield, X, Grid, LockKeyhole, Camera, Users, Sprout } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-// 🌟 引入定制的无干扰留言板组件与站点配置
-import LabComments from '../../components/LabComments';
+// 🌟 引入站点配置
 import { siteConfig } from '../../siteConfig';
 
 // 🌟 引入相册与友链数据以统计徽章 (请确保路径正确，如果报错请调整 ../ 的数量)
@@ -183,7 +182,7 @@ export default function AlchemyLab({ posts = [], chatters = [], moments = [] }: 
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
-  const [realWishes, setRealWishes] = useState<any[]>([]);
+  const realWishes: any[] = [];
 
   // 控制图鉴面板的开关
   const [showCatalog, setShowCatalog] = useState(false);
@@ -356,30 +355,6 @@ export default function AlchemyLab({ posts = [], chatters = [], moments = [] }: 
   const [year, month] = currentMonthStr.split('-');
   const cnMonths = ['零','壹','贰','叁','肆','伍','陆','柒','捌','玖','拾','拾壹','拾贰'];
   const formattedMonth = `${year} 卷${cnMonths[parseInt(month)] || month}`;
-
-  useEffect(() => {
-    if (!mounted) return;
-    let isMounted = true;
-    const fetchGitalkComments = async () => {
-      try {
-        const { owner, repo } = siteConfig.gitalkConfig;
-        const targetLabel = `workshop-${currentMonthStr}`;
-        const issueRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues?labels=${targetLabel}`);
-        const issues = await issueRes.json();
-        if (issues && issues.length > 0) {
-          const commentsRes = await fetch(issues[0].comments_url);
-          const comments = await commentsRes.json();
-          if (isMounted && Array.isArray(comments)) {
-            setRealWishes(comments.map((c: any) => ({ id: c.id.toString(), content: c.body, author: c.user.login, type: 'wish', date: currentMonthStr + '-01' })));
-            return;
-          }
-        }
-        if (isMounted) setRealWishes([]);
-      } catch (err) { if (isMounted) setRealWishes([]); }
-    };
-    fetchGitalkComments();
-    return () => { isMounted = false; };
-  }, [currentMonthStr, mounted]);
 
   const { shelvesData, stickyNotes, stats } = useMemo(() => {
     if (!mounted) return { shelvesData: [], stickyNotes: [], stats: { post: 0, chatter: 0, moment: 0, wish: 0 } };
@@ -645,11 +620,6 @@ export default function AlchemyLab({ posts = [], chatters = [], moments = [] }: 
                 <div className="flex items-center gap-1.5"><Coffee size={14} className="text-[#10b981]"/><span className="text-xl font-bold text-[#e8e4d9] font-serif">{stats.moment}</span></div>
                 <span className="text-[10px] text-[#8b6b4a] tracking-widest mt-1">瞬间思绪</span>
               </div>
-              <div className="w-px h-8 bg-[#8b6b4a]/40" />
-              <div className="flex flex-col items-center justify-center w-12">
-                <div className="flex items-center gap-1.5"><MessageCircleHeart size={14} className="text-[#ec4899]"/><span className="text-xl font-bold text-[#e8e4d9] font-serif">{stats.wish}</span></div>
-                <span className="text-[10px] text-[#8b6b4a] tracking-widest mt-1">祈愿留言</span>
-              </div>
             </motion.div>
           </AnimatePresence>
         </div>
@@ -684,14 +654,6 @@ export default function AlchemyLab({ posts = [], chatters = [], moments = [] }: 
             ))}
           </motion.div>
         </AnimatePresence>
-      </div>
-
-      {/* 留言区域 */}
-      <div className="w-full max-w-4xl mx-auto mt-10 mb-16 px-4">
-         <h2 className="text-xl font-black text-[#8b6b4a] mb-2 font-serif text-center uppercase tracking-widest border-b border-[#8b6b4a]/30 pb-4">
-            「 {formattedMonth} 的访客留言簿 」
-         </h2>
-         <LabComments key={`gitalk-${currentMonthStr}`} pageId={`workshop-${currentMonthStr}`} />
       </div>
 
     </motion.div>

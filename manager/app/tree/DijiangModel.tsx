@@ -9,7 +9,6 @@ import * as THREE from 'three';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, Html } from '@react-three/drei';
 
-import LabComments from '../../components/LabComments';
 import { siteConfig } from '../../siteConfig';
 
 import { albums } from '../../data/albums';
@@ -332,7 +331,7 @@ export default function DijiangModel({ posts = [], chatters = [], moments = [] }
 
   useEffect(() => { setMounted(true); }, []);
 
-  const [realWishes, setRealWishes] = useState<any[]>([]);
+  const realWishes: any[] = [];
 
   // RPG 数据结算
   const rpgStats = useMemo(() => {
@@ -490,36 +489,6 @@ export default function DijiangModel({ posts = [], chatters = [], moments = [] }
   const formattedMonth = `RECORD.Y${year.substring(2)}M${parseInt(month)}`;
 
   const [activeCategory, setActiveCategory] = useState<'post' | 'chatter' | 'moment' | 'message' | null>(null);
-
-  useEffect(() => {
-    if (!mounted) return;
-    let isMounted = true;
-    const fetchGitalkComments = async () => {
-      try {
-        const { owner, repo } = siteConfig.gitalkConfig;
-        const targetLabel = `workshop-${currentMonthStr}`;
-        const issueRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/issues?labels=${targetLabel}`);
-        const issues = await issueRes.json();
-
-        if (issues && issues.length > 0) {
-          const commentsRes = await fetch(issues[0].comments_url);
-          const comments = await commentsRes.json();
-          if (isMounted && Array.isArray(comments)) {
-            const fetchedWishes = comments.map((c: any) => ({
-              id: c.id.toString(), content: c.body, title: c.body, author: c.user.login, type: 'message', date: c.created_at,
-            }));
-            setRealWishes(fetchedWishes);
-            return;
-          }
-        }
-        if (isMounted) setRealWishes([]);
-      } catch (err) {
-        if (isMounted) setRealWishes([]);
-      }
-    };
-    fetchGitalkComments();
-    return () => { isMounted = false; };
-  }, [currentMonthStr, mounted]);
 
   const currentMonthRecords = useMemo(() => {
     const formatted = [...posts, ...chatters, ...moments].map(r => ({
@@ -862,15 +831,6 @@ export default function DijiangModel({ posts = [], chatters = [], moments = [] }
             </Canvas>
           </Suspense>
         </div>
-      </div>
-
-      {/* 🌟 底座：留言板 */}
-      <div className="w-full max-w-4xl mx-auto mt-10 mb-16 px-4 relative z-0">
-         <h2 className="text-xl font-black text-slate-800 dark:text-white mb-2 font-serif text-center uppercase tracking-[0.2em] border-b border-slate-300 dark:border-[#333] pb-4 flex flex-col items-center gap-2">
-            <span className="text-[10px] text-slate-500 font-mono">ENDFIELD RECEPTION CENTER</span>
-            「 {formattedMonth} 的通讯接收枢纽 」
-         </h2>
-         <LabComments key={`gitalk-${currentMonthStr}`} pageId={`workshop-${currentMonthStr}`} />
       </div>
 
     </motion.div>

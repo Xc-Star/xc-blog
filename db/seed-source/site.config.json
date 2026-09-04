@@ -53,15 +53,6 @@
     "睡大觉中",
     "到底在干嘛？"
   ],
-  "gitalkConfig": {
-    "clientID": "",
-    "clientSecret": "",
-    "repo": "",
-    "owner": "",
-    "admin": [
-      ""
-    ]
-  },
   "buildDate": "2026-03-23T00:00:00",
   "footerBadges": [
     {

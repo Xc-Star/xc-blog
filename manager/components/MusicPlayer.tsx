@@ -6,7 +6,6 @@ import { Play, Pause, SkipBack, SkipForward, Repeat, Shuffle, RefreshCcw, ListMu
 import Navbar from '../../components/Navbar';
 import PageTransition from '../../components/PageTransition';
 import { useMusic } from '../../components/MusicProvider';
-import Comments from '../../components/Comments';
 
 export default function MusicPage() {
   const {
@@ -262,24 +261,6 @@ export default function MusicPage() {
                 )}
               </div>
             </div>
-          </div>
-
-          {/* 留言板 */}
-          <div className="mt-12 mb-20 bg-white/60 dark:bg-slate-800/50 backdrop-blur-xl rounded-[40px] shadow-2xl border border-white/40 dark:border-white/10 overflow-hidden transition-colors duration-700 relative">
-             <div className="px-8 md:px-16 py-12 relative">
-                <div className="flex items-center gap-3 mb-8 border-b border-slate-300/50 dark:border-slate-700 pb-6">
-                   <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center">
-                      <MessageSquare className="text-indigo-500" size={24} />
-                   </div>
-                   <div>
-                      <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">乐迷留言板</h3>
-                      <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">听着这首歌，你想到了什么？</p>
-                   </div>
-                </div>
-                <div className="relative">
-                   <Comments />
-                </div>
-             </div>
           </div>
 
         </div>

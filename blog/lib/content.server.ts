@@ -160,7 +160,9 @@ export async function getProjects() {
 
 /** 这些字段会被注入浏览器的快照蕴含，只允许服务端读取。 */
 const CLIENT_HIDDEN_KEYS = ['picBedToken'];
-const CLIENT_HIDDEN_NESTED_KEYS: Record<string, string[]> = { geminiConfig: ['apiKey', 'systemPrompt'] };
+const CLIENT_HIDDEN_NESTED_KEYS: Record<string, string[]> = {
+  geminiConfig: ['apiKey', 'systemPrompt'],
+};
 
 function stripSecrets(site: Record<string, unknown>): Record<string, unknown> {
   const safe = { ...site };

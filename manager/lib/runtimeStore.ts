@@ -12,6 +12,7 @@ export type RuntimeSnapshot = {
   albums: unknown[];
   friends: unknown[];
   projects: unknown[];
+  projectCategories: unknown[];
 };
 
 type GlobalWithRuntime = typeof globalThis & {

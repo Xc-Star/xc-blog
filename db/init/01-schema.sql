@@ -118,17 +118,31 @@ CREATE TABLE IF NOT EXISTS friends (
 -- ---------------------------------------------------------------------
 -- 项目矩阵
 -- ---------------------------------------------------------------------
+-- ---------------------------------------------------------------------
+-- 项目分类（由管理端自由增删）
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS project_categories (
+  id         VARCHAR(64) NOT NULL,
+  name       VARCHAR(64) NOT NULL DEFAULT '',
+  sort_order INT         NOT NULL DEFAULT 0,
+  updated_at TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_project_categories_sort (sort_order)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS projects (
   id          VARCHAR(64)   NOT NULL,
   name        VARCHAR(255)  NOT NULL DEFAULT '',
   description TEXT          NULL,
   icon        VARCHAR(64)   NULL,
+  category    VARCHAR(64)   NOT NULL DEFAULT '',
   github_url  VARCHAR(1024) NULL,
   tags        JSON          NULL,
   sort_order  INT           NOT NULL DEFAULT 0,
   updated_at  TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
-  KEY idx_projects_sort (sort_order)
+  KEY idx_projects_sort (sort_order),
+  KEY idx_projects_category (category)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------------

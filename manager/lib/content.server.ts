@@ -144,18 +144,27 @@ export async function getProjects() {
     name: string | null;
     description: string | null;
     icon: string | null;
+    category: string | null;
     github_url: string | null;
     tags: unknown;
-  }>('SELECT id, name, description, icon, github_url, tags FROM projects ORDER BY sort_order ASC, id ASC');
+  }>('SELECT id, name, description, icon, category, github_url, tags FROM projects ORDER BY sort_order ASC, id ASC');
 
   return rows.map((row) => ({
     id: row.id,
     name: row.name ?? '',
     description: row.description ?? '',
     icon: row.icon ?? '',
+    category: row.category ?? 'mine',
     githubUrl: row.github_url ?? '',
     tags: parseJsonColumn<string[]>(row.tags, []),
   }));
+}
+
+export async function getProjectCategories() {
+  const rows = await query<{ id: string; name: string | null }>(
+    'SELECT id, name FROM project_categories ORDER BY sort_order ASC, id ASC',
+  );
+  return rows.map((row) => ({ id: row.id, name: row.name ?? '' }));
 }
 
 /** 这些字段会被注入浏览器的快照蕴含，只允许服务端读取。 */
@@ -199,14 +208,15 @@ export async function getSiteConfig(): Promise<Record<string, unknown>> {
  * 渚涘叏绔欙紙鍚鎴风缁勪欢锛夐€氳繃 siteConfig / albums / friendsData / projectsData 浠ｇ悊璇诲彇銆?
  */
 export async function loadRuntime(): Promise<RuntimeSnapshot> {
-  const [site, albums, friends, projects] = await Promise.all([
+  const [site, albums, friends, projects, projectCategories] = await Promise.all([
     getSiteConfig(),
     getAlbums(),
     getFriends(),
     getProjects(),
+    getProjectCategories(),
   ]);
 
-  const snapshot: RuntimeSnapshot = { site: stripSecrets(site), albums, friends, projects };
+  const snapshot: RuntimeSnapshot = { site: stripSecrets(site), albums, friends, projects, projectCategories };
   setRuntime(snapshot);
   return snapshot;
 }

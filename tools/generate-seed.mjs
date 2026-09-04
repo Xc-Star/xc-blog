@@ -144,11 +144,21 @@ readJson(path.join(CONTENT, 'data', 'friends.json'), []).forEach((f, i) => {
 });
 lines.push('');
 
+lines.push('-- 项目分类');
+readJson(path.join(CONTENT, 'data', 'projectCategories.json'), []).forEach((c, i) => {
+  lines.push(
+    'INSERT INTO project_categories (id, name, sort_order) VALUES (' +
+      [q(c.id), q(c.name ?? ''), i].join(', ') +
+      ') ON DUPLICATE KEY UPDATE name = VALUES(name);',
+  );
+});
+lines.push('');
+
 lines.push('-- 项目矩阵');
 readJson(path.join(CONTENT, 'data', 'projects.json'), []).forEach((p, i) => {
   lines.push(
-    'INSERT INTO projects (id, name, description, icon, github_url, tags, sort_order) VALUES (' +
-      [q(p.id), q(p.name ?? ''), q(p.description ?? ''), q(p.icon ?? ''), q(p.githubUrl ?? ''), json(p.tags ?? []), i].join(', ') +
+    'INSERT INTO projects (id, name, description, icon, category, github_url, tags, sort_order) VALUES (' +
+      [q(p.id), q(p.name ?? ''), q(p.description ?? ''), q(p.icon ?? ''), q(p.category ?? ''), q(p.githubUrl ?? ''), json(p.tags ?? []), i].join(', ') +
       ') ON DUPLICATE KEY UPDATE name = VALUES(name);',
   );
 });

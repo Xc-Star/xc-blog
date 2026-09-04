@@ -97,5 +97,8 @@ INSERT INTO albums (id, title, description, cover, album_date, photos, sort_orde
 -- 友链
 INSERT INTO friends (id, name, url, description, avatar, theme_color, sort_order) VALUES ('amiya', '罗德岛 PRTS', 'https://prts.wiki/', '记录泰拉大陆的各项数据与前文明遗迹，愿源石的阴霾早日散去。', 'https://bu.dusays.com/2026/03/24/69c1e38b4c370.jpg', 'rgba(16, 185, 129, 0.5)', 0) ON DUPLICATE KEY UPDATE name = VALUES(name);
 
+-- 项目分类
+INSERT INTO project_categories (id, name, sort_order) VALUES ('cat_mine', '我的作品', 0) ON DUPLICATE KEY UPDATE name = VALUES(name);
+
 -- 项目矩阵
-INSERT INTO projects (id, name, description, icon, github_url, tags, sort_order) VALUES ('proj_1775049332705', 'Computational Chemistry Tool', '该工具本作者使用在Win下的WSL2平台，系统为Ubuntu22，个人使用请依据自己数据进行修改（这些工具只是整合了一些流程）', 'rocket', 'https://github.com/heiehiehi/Computational_Chemistry_Tool', '["Gromacs","RMSF"]', 0) ON DUPLICATE KEY UPDATE name = VALUES(name);
+INSERT INTO projects (id, name, description, icon, category, github_url, tags, sort_order) VALUES ('proj_1775049332705', 'Computational Chemistry Tool', '该工具本作者使用在Win下的WSL2平台，系统为Ubuntu22，个人使用请依据自己数据进行修改（这些工具只是整合了一些流程）', 'rocket', 'cat_mine', 'https://github.com/heiehiehi/Computational_Chemistry_Tool', '["Gromacs","RMSF"]', 0) ON DUPLICATE KEY UPDATE name = VALUES(name);

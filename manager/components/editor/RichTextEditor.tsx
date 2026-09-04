@@ -15,10 +15,10 @@ import { Color } from '@tiptap/extension-color';
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
 
-// 🌟 引入 Markdown 插件
+// 引入 Markdown 插件
 import { Markdown } from 'tiptap-markdown';
 
-// 🌟 引入满血版 C++ 语法高亮
+// 引入满血版 C++ 语法高亮
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { createLowlight, all } from 'lowlight';
 
@@ -53,7 +53,7 @@ const FontSize = Extension.create({
   addCommands() { return { setFontSize: (fontSize: string) => ({ chain }) => chain().setMark('textStyle', { fontSize }).run() }; },
 });
 
-// 🌟 终极修复：彻底废弃 absolute 下拉框，升级为 Fixed 居中模态框 (Modal)！
+// 终极修复：彻底废弃 absolute 下拉框，升级为 Fixed 居中模态框 (Modal)！
 // 这样就能 100% 逃脱父级容器的 overflow 限制，绝对不可能再被遮挡！
 const CustomColorPicker = ({ activeColor, onSelect, onConfirm, recentColors, onClose }: any) => {
   const presets = ['#000000', '#6366F1', '#EC4899', '#10B981', '#F59E0B', '#EF4444', '#3B82F6', '#8B5CF6'];

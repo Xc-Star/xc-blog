@@ -4,7 +4,7 @@ import { cmsJson } from '@/lib/cmsApi';
 import { useState, useMemo, useRef, useEffect } from 'react';
 import TimelineNode from './TimelineNode';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Search, AlertTriangle, Sparkles, LayoutGrid, ListTree, Calendar, Hash, ArrowRight, Edit3, ArrowUp } from 'lucide-react';
+import { Plus, Search, AlertTriangle, Sparkles, LayoutGrid, ListTree, Calendar, Hash, ArrowRight, Edit3, ArrowUp, Orbit, RadioTower } from 'lucide-react';
 import { useToast } from './ToastProvider';
 import Link from 'next/link';
 
@@ -14,7 +14,7 @@ export default function TimelineClient({ posts: initialPosts, tags }: { posts: a
   const [searchQuery, setSearchQuery] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // 🌟 核心状态：视图模式 ('timeline' | 'card')
+  // 核心状态：视图模式 ('timeline' | 'card')
   const [viewMode, setViewMode] = useState<'timeline' | 'card'>('timeline');
   const [showScrollTop, setShowScrollTop] = useState(false);
 
@@ -62,10 +62,10 @@ export default function TimelineClient({ posts: initialPosts, tags }: { posts: a
         body: JSON.stringify({ id: deleteModal.slug })
       });
       if (data.success) {
-        showToast("🗑️ 文章已从硬盘物理粉碎", "success");
+        showToast("文章已从硬盘物理粉碎", "success");
         setPosts(prev => prev.filter(p => p.slug !== deleteModal.slug));
       } else {
-        showToast("❌ 销毁失败: " + data.message, "error");
+        showToast("销毁失败: " + data.message, "error");
       }
     } catch (err) {
       showToast("无法连接到 Python 引擎", "error");
@@ -97,7 +97,7 @@ export default function TimelineClient({ posts: initialPosts, tags }: { posts: a
   return (
     <div className="w-full max-w-5xl mx-auto mt-28 px-4 sm:px-10 relative z-10">
 
-      {/* 💎 统一的销毁确认弹窗 */}
+      {/* 统一的销毁确认弹窗 */}
       <AnimatePresence>
         {deleteModal.isOpen && (
           <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
@@ -123,7 +123,7 @@ export default function TimelineClient({ posts: initialPosts, tags }: { posts: a
         </p>
       </div>
 
-      {/* 🌟 搜索与控制面板 */}
+      {/* 搜索与控制面板 */}
       <div className="flex flex-col items-center gap-8 mb-16 relative z-[99]">
         <div className="relative w-full max-w-lg group" ref={searchContainerRef}>
           <input
@@ -172,8 +172,8 @@ export default function TimelineClient({ posts: initialPosts, tags }: { posts: a
                     ))}
                   </div>
                 ) : (
-                  <div className="px-6 py-8 text-center text-slate-500 dark:text-slate-400 text-sm font-medium">
-                    赛博空间里找不到这个印记 🌌
+                  <div className="px-6 py-8 text-center text-slate-500 dark:text-slate-400 text-sm font-medium flex items-center justify-center gap-2">
+                    赛博空间里找不到这个印记 <Orbit size={16} />
                   </div>
                 )}
               </motion.div>
@@ -267,7 +267,7 @@ export default function TimelineClient({ posts: initialPosts, tags }: { posts: a
                   <motion.div key={post.slug} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3, delay: idx * 0.05 }}>
                     <div className="bg-white/60 dark:bg-slate-800/70 backdrop-blur-xl border border-white/50 dark:border-slate-700/50 rounded-3xl overflow-hidden shadow-lg flex flex-col h-full group relative">
 
-                      {/* 🌟 核心修正：点击卡片主体，跳转到前台阅读页面 (/posts/xxx) */}
+                      {/* 核心修正：点击卡片主体，跳转到前台阅读页面 (/posts/xxx) */}
                       <Link href={`/posts/${post.slug}`} className="block flex-1 flex flex-col cursor-pointer">
                         <div className="relative h-40 overflow-hidden">
                           <img src={post.cover} alt={post.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -287,7 +287,7 @@ export default function TimelineClient({ posts: initialPosts, tags }: { posts: a
                         </div>
                       </Link>
 
-                      {/* 🌟 核心修正：独立于 Link 之外的绝对定位按钮区，互不干扰！ */}
+                      {/* 核心修正：独立于 Link 之外的绝对定位按钮区，互不干扰！ */}
                       <div className="absolute top-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10">
                         {/* 真正的编辑按钮，指向 /editor */}
                         <Link href={`/editor?id=${post.slug}&type=post`} className="p-2 bg-indigo-500/90 backdrop-blur-md text-white rounded-xl hover:bg-indigo-600 hover:scale-110 shadow-lg shadow-indigo-500/30 transition-all cursor-pointer">
@@ -361,8 +361,8 @@ export default function TimelineClient({ posts: initialPosts, tags }: { posts: a
               </AnimatePresence>
 
               {timelinePosts.length === 0 && (
-                 <div className="text-center py-20 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-sm">
-                    这个频段没有接收到任何信号 📡
+                 <div className="text-center py-20 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2">
+                    这个频段没有接收到任何信号 <RadioTower size={16} />
                  </div>
               )}
             </div>

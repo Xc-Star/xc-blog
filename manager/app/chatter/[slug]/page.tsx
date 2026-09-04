@@ -1,17 +1,18 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Pencil, Sparkles } from 'lucide-react';
 
-// 🌟 核心升级：引入 Next.js 现代统一解析流
+// 核心升级：引入 Next.js 现代统一解析流
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
-import remarkGfm from 'remark-gfm'; // 🌟 挂载 GFM 支持删除线
+import remarkGfm from 'remark-gfm'; // 挂载 GFM 支持删除线
 import remarkMath from 'remark-math';
 import remarkRehype from 'remark-rehype';
 import rehypeHighlight from 'rehype-highlight';
 import rehypeStringify from 'rehype-stringify';
 import rehypeKatex from 'rehype-katex';
 
-// 🌟 引入神仙代码高亮主题（Atom One Dark）
+// 引入神仙代码高亮主题（Atom One Dark）
 import 'highlight.js/styles/atom-one-dark.css';
 
 import Navbar from '../../../components/Navbar';
@@ -28,7 +29,7 @@ async function getChatterData(slug: string) {
   let { data, content } = entry;
 
   // ==========================================
-  // 🌟 前台渲染清洗区：终极防吞换行 + 安全保护补丁！
+  // 前台渲染清洗区：终极防吞换行 + 安全保护补丁！
   // ==========================================
 
   // 1. 基础物理清洗：统一换行符，干掉幽灵占位符和纯空格废行
@@ -39,12 +40,12 @@ async function getChatterData(slug: string) {
   // 2. 强行修复数字列表缺少空格导致无法渲染为列表的 Bug (1.百度 -> 1. 百度)
   content = content.replace(/^(\s*\d+)\.([^ \n])/gm, '$1. $2');
 
-  // 3. 🌟 空间隔离防吞换行阵法（绝对不伤代码块！）
+  // 3. 空间隔离防吞换行阵法（绝对不伤代码块！）
   const blocks = content.split(/(```[\s\S]*?```|~~~[\s\S]*?~~~)/g);
   content = blocks.map((block, index) => {
     // 奇数索引是代码块
     if (index % 2 === 1) {
-      // 🌟 安全注入：如果代码块没写明语言，只在开头安全补上 cpp，绝不破坏结尾！
+      // 安全注入：如果代码块没写明语言，只在开头安全补上 cpp，绝不破坏结尾！
       if (/^```[ \t]*(\n|$)/.test(block)) {
          return block.replace(/^```[ \t]*/, '```cpp');
       }
@@ -142,12 +143,12 @@ export default async function ChatterDetail({ params }: { params: Promise<{ slug
                   {chatterData.title}
                 </h1>
 
-                {/* ✅ 控制台专供：修改此篇按钮保留 */}
+                {/* 控制台专供：修改此篇按钮保留 */}
                 <Link
                   href={`/editor?id=${chatterData.slug}&type=chatter`}
                   className="absolute top-0 right-0 p-2.5 md:p-3 rounded-xl md:rounded-2xl bg-white/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 hover:bg-indigo-500 hover:text-white transition-all shadow-sm border border-slate-200 dark:border-slate-700 group flex items-center gap-2 active:scale-95 z-50"
                 >
-                  <span className="text-base md:text-lg">✏️</span>
+                  <Pencil size={18} />
                   <span className="text-xs md:text-sm font-bold hidden md:inline-block group-hover:inline-block">修改此篇</span>
                 </Link>
 
@@ -159,7 +160,7 @@ export default async function ChatterDetail({ params }: { params: Promise<{ slug
 
                   {chatterData.mood && (
                     <div className="flex items-center gap-1.5 md:gap-2 text-pink-600 dark:text-pink-400 font-black bg-pink-500/5 dark:bg-pink-400/10 px-3 md:px-4 py-1.5 md:py-2 rounded-2xl text-xs md:text-sm border border-pink-500/10">
-                      ✨ 心情：{chatterData.mood}
+                      <Sparkles size={14} /> 心情：{chatterData.mood}
                     </div>
                   )}
 
@@ -190,10 +191,10 @@ export default async function ChatterDetail({ params }: { params: Promise<{ slug
                   .prose ul ul, .prose ol ul { list-style-type: circle !important; margin-top: 0.25rem !important; margin-bottom: 0.25rem !important; }
                   .prose ol ol, .prose ul ol { list-style-type: lower-alpha !important; margin-top: 0.25rem !important; margin-bottom: 0.25rem !important; }
                   
-                  /* 🌟 删除线强制展现 */
+                  /* 删除线强制展现 */
                   .prose s, .prose del { text-decoration-line: line-through !important; opacity: 0.6; }
 
-                  /* 🌟 引用块专属果冻极客风样式补丁 */
+                  /* 引用块专属果冻极客风样式补丁 */
                   .prose blockquote {
                     border-left: 4px solid #6366f1 !important;
                     background-color: rgba(99, 102, 241, 0.05) !important;
@@ -208,7 +209,7 @@ export default async function ChatterDetail({ params }: { params: Promise<{ slug
                     margin: 0 !important; 
                     color: inherit !important;
                   }
-                  /* 🌟 彻底杀掉 Tailwind Typography 生成的前后伪元素引号！ */
+                  /* 彻底杀掉 Tailwind Typography 生成的前后伪元素引号！ */
                   .prose blockquote p::before,
                   .prose blockquote p::after {
                     display: none !important;
@@ -221,7 +222,7 @@ export default async function ChatterDetail({ params }: { params: Promise<{ slug
                     color: #94a3b8 !important;
                   }
                   
-                  /* 🌟 果冻极客风代码字体 */
+                  /* 果冻极客风代码字体 */
                   .prose pre {
                     background-color: #282c34 !important; color: #abb2bf !important;
                     padding: 1rem !important; border-radius: 1.25rem !important;
@@ -251,12 +252,12 @@ export default async function ChatterDetail({ params }: { params: Promise<{ slug
                   }
                   .dark .prose p code, .dark .prose li code { background-color: rgba(99, 102, 241, 0.2) !important; color: #818cf8 !important; }
                   
-                  /* 🌟 确保前台生成的 <br> 占据真实的垂直空间 */
+                  /* 确保前台生成的 <br> 占据真实的垂直空间 */
                   .prose br { display: block !important; content: "" !important; margin-top: 0.5em !important; }
 
                   .prose img { display: block !important; margin: 1.5rem auto !important; border-radius: 1rem !important; box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important; max-width: 100% !important; height: auto !important; }
 
-                  /* 🌟 Atom One Dark 顶级补丁 */
+                  /* Atom One Dark 顶级补丁 */
                   .prose pre code .hljs-comment, .prose pre code .hljs-quote { color: #5c6370 !important; font-style: italic !important; }
                   .prose pre code .hljs-doctag, .prose pre code .hljs-keyword, .prose pre code .hljs-formula { color: #c678dd !important; }
                   .prose pre code .hljs-keyword.type_, .prose pre code .hljs-type { color: #c678dd !important; } 

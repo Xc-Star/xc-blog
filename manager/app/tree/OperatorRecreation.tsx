@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 
 // ==========================================
-// 🌟 黍姐姐的专属语音库
+// 黍姐姐的专属语音库
 // ==========================================
 const SHU_QUOTES = [
   "好好吃饭，好好休息。剩下的，交给我。",
@@ -17,7 +17,7 @@ const SHU_QUOTES = [
 ];
 
 // ==========================================
-// 🌟 干员休息处主组件 (全新 PRTS 通讯气泡版)
+// 干员休息处主组件 (全新 PRTS 通讯气泡版)
 // ==========================================
 export default function OperatorRecreation() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -88,7 +88,7 @@ export default function OperatorRecreation() {
           <img src="/recreation-fg.png" alt="Foreground" className="w-auto h-full object-contain object-bottom" />
         </div>
 
-        {/* === 🌟 核心分层架构：移动控制层 === */}
+        {/* === 核心分层架构：移动控制层 === */}
         <motion.div
           className="absolute z-[30] w-64 h-64 pointer-events-none flex flex-col items-center justify-center"
           animate={{
@@ -102,14 +102,14 @@ export default function OperatorRecreation() {
           }}
           style={{ bottom: "12%" }}
         >
-          {/* 🌟 全新硬核科技风语音气泡 */}
+          {/* 全新硬核科技风语音气泡 */}
           <AnimatePresence>
             {showBubble && (
               <motion.div
                 initial={{ opacity: 0, y: 10, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -5, scale: 0.95 }}
-                // 🌟 位置下移：改为了 bottom-[75%]
+                // 位置下移：改为了 bottom-[75%]
                 className="absolute bottom-[50%] mb-2 left-1/2 -translate-x-1/2 min-w-[200px] max-w-[260px] z-50 pointer-events-none"
               >
                 <div className="relative bg-zinc-900/90 backdrop-blur-md border border-zinc-700/80 p-3 shadow-[0_0_20px_rgba(0,0,0,0.6)] overflow-hidden">
@@ -145,7 +145,7 @@ export default function OperatorRecreation() {
             )}
           </AnimatePresence>
 
-          {/* === 🌟 翻转控制层 === */}
+          {/* === 翻转控制层 === */}
           <motion.div
             className="w-full h-full relative"
             animate={{

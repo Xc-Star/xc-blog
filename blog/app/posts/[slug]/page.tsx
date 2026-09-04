@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
-import remarkGfm from 'remark-gfm'; // 🌟 核心引入：支持删除线和表格等 GFM 语法
+import remarkGfm from 'remark-gfm'; // 核心引入：支持删除线和表格等 GFM 语法
 import remarkRehype from 'remark-rehype';
 import rehypeHighlight from 'rehype-highlight';
 import rehypeStringify from 'rehype-stringify';
@@ -42,13 +42,13 @@ async function getPostData(slug: string) {
   let { data, content } = entry;
 
   // ==========================================
-  // 🌟 前台渲染清洗区：终极防吞换行补丁！
+  // 前台渲染清洗区：终极防吞换行补丁！
   // ==========================================
 
   // 1. 强行修复数字列表缺少空格导致无法渲染为列表的 Bug (1.百度 -> 1. 百度)
   content = content.replace(/^(\s*\d+)\.([^ \n])/gm, '$1. $2');
 
-  // 2. 🌟 拯救被 Markdown 引擎吞噬的“连续空行”！
+  // 2. 拯救被 Markdown 引擎吞噬的“连续空行”！
   // 统一换行符，并清理纯空格的废弃空行
   content = content.replace(/\r\n/g, '\n').replace(/^[ \t]+$/gm, '');
 
@@ -72,9 +72,9 @@ async function getPostData(slug: string) {
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkMath)
-    // 🌟 allowDangerousHtml 必须开启，这样上面生成的 <br/> 才能顺利通过变成真正的换行！
+    // allowDangerousHtml 必须开启，这样上面生成的 <br/> 才能顺利通过变成真正的换行！
     .use(remarkRehype, { allowDangerousHtml: true })
-    // 🌟 核心升级：开启代码语言自动侦测，并限制白名单，大幅提高 C++ 和常用语言的猜中率！
+    // 核心升级：开启代码语言自动侦测，并限制白名单，大幅提高 C++ 和常用语言的猜中率！
     // @ts-ignore
     .use(rehypeHighlight, {
       detect: true,
@@ -127,7 +127,7 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
                   {postData.title}
                 </h1>
 
-                {/* ✅ 前端展示：修改此篇的特权按钮已经彻底移除 */}
+                {/* 前端展示：修改此篇的特权按钮已经彻底移除 */}
 
                 <div className="flex flex-wrap items-center gap-2 md:gap-3">
                   <div className="flex items-center gap-1.5 md:gap-2 text-indigo-700 dark:text-indigo-400 font-bold bg-white/30 dark:bg-slate-900/50 px-3 md:px-4 py-1.5 md:py-2 rounded-full w-max text-xs md:text-sm transition-colors duration-700 shadow-sm border border-white/20 dark:border-white/5">
@@ -164,7 +164,7 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
                   
                   .prose del { text-decoration-color: inherit !important; opacity: 0.6; }
                   
-                  /* 🌟 引用块专属果冻极客风样式补丁 */
+                  /* 引用块专属果冻极客风样式补丁 */
                   .prose blockquote {
                     border-left: 4px solid #6366f1 !important;
                     background-color: rgba(99, 102, 241, 0.05) !important;

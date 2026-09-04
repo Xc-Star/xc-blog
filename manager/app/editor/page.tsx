@@ -12,7 +12,7 @@ import { ArrowLeft, AlertTriangle, Save, LogOut } from 'lucide-react';
 import { useToast } from '../../components/ToastProvider';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// 🌟 核心修改 1：把原本暴露的主函数改名为 EditorContent（不带 export default）
+// 核心修改 1：把原本暴露的主函数改名为 EditorContent（不带 export default）
 function EditorContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -82,11 +82,11 @@ function EditorContent() {
             setContent(data.draft.content || '');
 
             setTimeout(() => setHasUnsavedChanges(false), 500);
-            showToast("✅ 已读取本地源数据", "success");
+            showToast("已读取本地源数据", "success");
           } else {
-             showToast(data.message || "❌ 未找到草稿或原文件", "error");
+             showToast(data.message || "未找到草稿或原文件", "error");
           }
-        } catch (e) { showToast("❌ 读取失败", "error"); }
+        } catch (e) { showToast("读取失败", "error"); }
       };
       loadDraft();
     }
@@ -119,7 +119,7 @@ function EditorContent() {
 
   const handleSave = async (isPublish: boolean, shouldExitAfterSave: boolean = false) => {
     if (!title.trim() && docType !== 'about') {
-      showToast("⚠️ 请填写标题", "warning"); return;
+      showToast("请填写标题", "warning"); return;
     }
     const payload = {
       id: docType === 'about' ? 'about' : (currentDocId === 'new' ? null : currentDocId),
@@ -138,14 +138,14 @@ function EditorContent() {
           body: JSON.stringify({ operations: [{ type: 'publish_article', value: payload }] })
         });
         if (!data.success) {
-          showToast(`❌ 发布失败：${data.message}`, "error");
+          showToast(`发布失败：${data.message}`, "error");
           return;
         }
         setHasUnsavedChanges(false);
-        showToast("🚀 已发布，前台已生效", "success");
+        showToast("已发布，前台已生效", "success");
         if (shouldExitAfterSave) router.back();
       } catch (error: any) {
-        showToast(`❌ 发布失败：${error.message}`, "error");
+        showToast(`发布失败：${error.message}`, "error");
       } finally {
         setIsSaving(false);
       }
@@ -160,13 +160,13 @@ function EditorContent() {
       if (data.success) {
         setLastSaved(new Date().toLocaleTimeString());
         setHasUnsavedChanges(false);
-        showToast("💾 草稿已落盘", "success");
+        showToast("草稿已落盘", "success");
         if (shouldExitAfterSave) {
           setExitModalOpen(false);
           router.back();
         }
       }
-    } catch (e) { showToast("❌ 保存失败", "error"); }
+    } catch (e) { showToast("保存失败", "error"); }
     finally { setIsSaving(false); }
   };
 
@@ -250,7 +250,7 @@ function EditorContent() {
   );
 }
 
-// 🌟 核心修改 2：在底部暴露真正的 EditorPage，并用 Suspense 把里面的内容套起来
+// 核心修改 2：在底部暴露真正的 EditorPage，并用 Suspense 把里面的内容套起来
 export default function EditorPage() {
   return (
     <Suspense fallback={

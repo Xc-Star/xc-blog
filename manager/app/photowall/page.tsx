@@ -53,9 +53,9 @@ export default function PhotoWallPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ albums: newAlbums })
       });
-      showToast(data.success ? "✅ 画廊已保存，前台已生效" : `❌ 保存失败：${data.message}`, data.success ? "success" : "error");
+      showToast(data.success ? "画廊已保存，前台已生效" : `保存失败：${data.message}`, data.success ? "success" : "error");
     } catch (error: any) {
-      showToast(`❌ 保存失败：${error.message}`, "error");
+      showToast(`保存失败：${error.message}`, "error");
     }
   };
 
@@ -70,7 +70,7 @@ export default function PhotoWallPage() {
     <div className="min-h-screen relative pb-32">
       <Navbar />
 
-      {/* 🌟 核心修复 2：加入 key 强制重置状态！只要 isImgToolOpen 变了，组件就完全重生 */}
+      {/* 核心修复 2：加入 key 强制重置状态！只要 isImgToolOpen 变了，组件就完全重生 */}
       <FloatingImageTool
         key={isImgToolOpen ? 'tool-open' : 'tool-closed'}
         isOpen={isImgToolOpen}
@@ -115,10 +115,10 @@ export default function PhotoWallPage() {
           </div>
         )}
 
-        {/* 🌟 相册编辑弹窗 */}
+        {/* 相册编辑弹窗 */}
         {albumModal.isOpen && (
           <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
-            {/* 🌟 核心修复 1：去掉了 onClick 属性，防止误触关闭！ */}
+            {/* 核心修复 1：去掉了 onClick 属性，防止误触关闭！ */}
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
             <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="relative w-full max-w-md bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl rounded-[40px] border border-white/20 p-8 shadow-2xl">
               <h2 className="text-2xl font-black mb-6 dark:text-white">{albumModal.mode === 'add' ? '创建新相册' : '修改相册属性'}</h2>
@@ -149,10 +149,10 @@ export default function PhotoWallPage() {
           </div>
         )}
 
-        {/* 🌟 照片编辑弹窗 */}
+        {/* 照片编辑弹窗 */}
         {photoModal.isOpen && (
           <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
-            {/* 🌟 核心修复 1：同样去掉 onClick 误触关闭 */}
+            {/* 核心修复 1：同样去掉 onClick 误触关闭 */}
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
             <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="relative w-full max-w-md bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl rounded-[40px] border border-white/20 p-8 shadow-2xl">
               <h2 className="text-2xl font-black mb-6 dark:text-white">{photoModal.mode === 'add' ? '添加新照片' : '修改照片描述'}</h2>

@@ -2,15 +2,13 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-// 🌟 引入你的图床工具组件 (请根据你实际的文件夹层级调整相对路径)
+import { Compass, Cloud, Settings2 } from 'lucide-react';
 import FloatingImageTool from '../editor/FloatingImageTool';
 
 export default function ProfileSection({ formData, handleUpdate, saveConfig }: any) {
-  // 🌟 终极防崩溃兜底
   const safeData = formData || {};
   const safeSocial = safeData.social || {};
 
-  // 🌟 控制图床工具的状态
   const [isImageToolOpen, setIsImageToolOpen] = useState(false);
   const [targetImageField, setTargetImageField] = useState<'avatarUrl' | 'faviconUrl' | null>(null);
 
@@ -37,7 +35,6 @@ export default function ProfileSection({ formData, handleUpdate, saveConfig }: a
     });
   };
 
-  // 🌟🌟🌟 核心破局点：化繁为简！
   const handleSaveAll = () => {
     saveConfig('全量更新个人名片');
   };
@@ -58,11 +55,11 @@ export default function ProfileSection({ formData, handleUpdate, saveConfig }: a
           <div className="flex-1 w-full space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-              {/* 🌟 导航栏三部曲配置区 */}
+              {/* 导航栏三部曲配置区 */}
               <div className="col-span-1 md:col-span-2 bg-white/30 dark:bg-slate-800/30 p-5 rounded-3xl border border-slate-200/50 dark:border-slate-700/50 grid grid-cols-3 gap-4 shadow-sm">
                 <div className="col-span-3 pb-2 border-b border-slate-200 dark:border-slate-700/50 mb-2">
                   <h3 className="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                    🧭 导航栏显示配置
+                    <Compass size={14} /> 导航栏显示配置
                   </h3>
                 </div>
                 <div>
@@ -94,7 +91,7 @@ export default function ProfileSection({ formData, handleUpdate, saveConfig }: a
                 <div className="flex gap-2 mt-1">
                   <input type="text" value={safeData.faviconUrl || ''} onChange={e => handleUpdate('faviconUrl', e.target.value)} className="flex-1 bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
                   <button onClick={() => openImageTool('faviconUrl')} className="px-4 bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-500/20 dark:hover:bg-indigo-500/40 text-indigo-600 dark:text-indigo-300 rounded-2xl font-black text-xs transition-colors whitespace-nowrap flex items-center gap-1 shadow-sm">
-                    ☁️ 图床
+                    <Cloud size={14} /> 图床
                   </button>
                 </div>
               </div>
@@ -105,7 +102,7 @@ export default function ProfileSection({ formData, handleUpdate, saveConfig }: a
                 <div className="flex gap-2 mt-1">
                   <input type="text" value={safeData.avatarUrl || ''} onChange={e => handleUpdate('avatarUrl', e.target.value)} className="flex-1 bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500" />
                   <button onClick={() => openImageTool('avatarUrl')} className="px-4 bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-500/20 dark:hover:bg-indigo-500/40 text-indigo-600 dark:text-indigo-300 rounded-2xl font-black text-xs transition-colors whitespace-nowrap flex items-center gap-1 shadow-sm">
-                    ☁️ 图床
+                    <Cloud size={14} /> 图床
                   </button>
                 </div>
               </div>
@@ -147,9 +144,9 @@ export default function ProfileSection({ formData, handleUpdate, saveConfig }: a
                 </div>
               </div>
 
-              {/* 👇 🌟 新增：系统功能开关区域 */}
+              {/* 系统功能开关区域 */}
               <div className="col-span-1 md:col-span-2 pt-4 border-t border-slate-200 dark:border-slate-700/50">
-                <label className="text-[10px] font-black text-slate-400 uppercase ml-1 mb-2 block">⚙️ 系统功能开关</label>
+                <label className="text-[10px] font-black text-slate-400 uppercase ml-1 mb-2 flex items-center gap-1.5"><Settings2 size={12} /> 系统功能开关</label>
 
                 <div className="flex items-center justify-between p-4 bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex flex-col">
@@ -168,7 +165,7 @@ export default function ProfileSection({ formData, handleUpdate, saveConfig }: a
                 </div>
               </div>
 
-              {/* 👇 友链申请模板配置区域 */}
+              {/* 友链申请模板配置区域 */}
               <div className="col-span-1 md:col-span-2 pt-4 border-t border-slate-200 dark:border-slate-700/50">
                 <label className="text-[10px] font-black text-slate-400 uppercase ml-1">友链申请模板 (friendLinkApplyFormat)</label>
                 <textarea
@@ -189,7 +186,7 @@ export default function ProfileSection({ formData, handleUpdate, saveConfig }: a
         </div>
       </motion.section>
 
-      {/* 🌟 挂载全局图床工具 */}
+      {/* 挂载全局图床工具 */}
       <FloatingImageTool
         isOpen={isImageToolOpen}
         onClose={() => setIsImageToolOpen(false)}

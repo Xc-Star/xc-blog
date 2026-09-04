@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { RefreshCcw, Server } from 'lucide-react';
+import { RefreshCcw, Server, Rocket } from 'lucide-react';
 import { cmsJson } from '@/lib/cmsApi';
 
 type SyncStatus = {
@@ -22,7 +22,7 @@ export default function RepoSection() {
     try {
       const data = await cmsJson<SyncStatus>('/api/sync/check', { method: 'POST' });
       setStatus(data);
-      setLastMessage(data.message || (data.success ? '✅ 共享卷状态正常' : '⚠️ 共享卷需要检查'));
+      setLastMessage(data.message || (data.success ? '共享卷状态正常' : '共享卷需要检查'));
     } catch (error: any) {
       setStatus({ success: false, message: error.message });
       setLastMessage(error.message || '共享卷状态读取失败');
@@ -41,7 +41,7 @@ export default function RepoSection() {
       <div className="relative z-10 flex flex-col gap-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2">🚀 站点发布</h2>
+            <h2 className="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2"><Rocket size={20} className="text-indigo-500" /> 站点发布</h2>
             <p className="text-xs font-bold text-slate-500 dark:text-slate-400 mt-2">内容写入数据库后，博客端会即时读取；这里只负责健康检查。</p>
           </div>
           <button onClick={loadStatus} disabled={isChecking} className="px-4 py-2 rounded-2xl bg-white/50 dark:bg-slate-800/50 border border-white/40 dark:border-slate-700/50 text-xs font-black text-slate-600 dark:text-slate-300 hover:bg-white/80 dark:hover:bg-slate-700/70 transition-all active:scale-95 flex items-center gap-2">

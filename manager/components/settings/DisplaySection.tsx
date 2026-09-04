@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { MonitorCog, Tv, PencilRuler, TriangleAlert } from 'lucide-react';
 
 export default function DisplaySection({ showToast }: any) {
   const [customWidth, setCustomWidth] = useState<number | ''>('');
@@ -16,13 +17,13 @@ export default function DisplaySection({ showToast }: any) {
 
   const applyResolution = async (w: number, h: number) => {
     if (w < 1024 || h < 768) {
-      showToast("❌ 宽高不能低于 1024x768，否则排版会崩坏！", "error");
+      showToast("宽高不能低于 1024x768，否则排版会崩坏！", "error");
       return;
     }
 
     if (typeof window !== 'undefined' && (window as any).pywebview?.api) {
       await (window as any).pywebview.api.resize_window(w, h);
-      showToast(`✅ 视窗已平滑切换至 ${w} × ${h} 并永久保存`, "success");
+      showToast(`视窗已平滑切换至 ${w} × ${h} 并永久保存`, "success");
     } else {
       showToast("未连接到 Python 桌面核心", "error");
     }
@@ -31,7 +32,7 @@ export default function DisplaySection({ showToast }: any) {
   return (
     <motion.section initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xl border border-white/50 dark:border-slate-800/50 rounded-[40px] p-8 shadow-2xl">
       <div className="flex items-center gap-3 mb-8">
-        <h2 className="text-xl font-black text-slate-800 dark:text-white">🪟 视窗画面设置</h2>
+        <h2 className="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2"><MonitorCog size={20} className="text-indigo-500" /> 视窗画面设置</h2>
         <span className="px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-[10px] font-bold border border-amber-500/20">
           极客特调功能
         </span>
@@ -41,7 +42,7 @@ export default function DisplaySection({ showToast }: any) {
 
         {/* 左侧：预设选项 */}
         <div className="space-y-4">
-          <p className="text-[10px] font-black text-slate-400 uppercase">📺 快速预设</p>
+          <p className="text-[10px] font-black text-slate-400 uppercase flex items-center gap-1.5"><Tv size={12} /> 快速预设</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-3">
             {presets.map((p, i) => (
               <button
@@ -59,7 +60,7 @@ export default function DisplaySection({ showToast }: any) {
         {/* 右侧：自定义与警告信息 */}
         <div className="space-y-6">
           <div className="bg-indigo-50 dark:bg-slate-800/80 rounded-3xl p-6 border border-indigo-100 dark:border-slate-700">
-            <p className="text-[10px] font-black text-slate-400 uppercase mb-4">✍️ 自定义分辨率</p>
+            <p className="text-[10px] font-black text-slate-400 uppercase mb-4 flex items-center gap-1.5"><PencilRuler size={12} /> 自定义分辨率</p>
             <div className="flex items-center gap-2 mb-4">
               {/* 【修复】：去掉了引起报错的 Tailwind 伪类写法 */}
               <input
@@ -90,7 +91,7 @@ export default function DisplaySection({ showToast }: any) {
           </div>
 
           <div className="bg-amber-500/10 border border-amber-500/20 p-5 rounded-2xl flex gap-3 items-start">
-            <span className="text-xl">⚠️</span>
+            <TriangleAlert size={20} className="text-amber-500 shrink-0 mt-0.5" />
             <div>
               <p className="text-xs font-bold text-amber-600 dark:text-amber-400 mb-1">物理尺寸限制</p>
               <p className="text-[10px] text-amber-700/80 dark:text-amber-400/80 leading-relaxed">

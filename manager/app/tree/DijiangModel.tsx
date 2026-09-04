@@ -20,7 +20,7 @@ function seededRandom(seed: number) {
 }
 
 // ==========================================
-// 🌟 0. 终末地/罗德岛 干员信物徽章组件 (OperatorToken)
+// 0. 终末地/罗德岛 干员信物徽章组件 (OperatorToken)
 // ==========================================
 const OperatorToken = ({ badge, locked = false }: any) => {
   const tierStyles: Record<number, string> = {
@@ -61,7 +61,7 @@ const OperatorToken = ({ badge, locked = false }: any) => {
 };
 
 // ==========================================
-// 🌟 1. 日期格式清洗器
+// 1. 日期格式清洗器
 // ==========================================
 const formatDisplayDate = (dateStr: string) => {
   if (!dateStr) return '';
@@ -70,7 +70,7 @@ const formatDisplayDate = (dateStr: string) => {
 };
 
 // ==========================================
-// 🌟 2. 特效组件
+// 2. 特效组件
 // ==========================================
 const BlinkingPoints = ({ geometry, color, size, opacity }: any) => {
   const materialRef = useRef<any>();
@@ -108,7 +108,7 @@ const BlinkingPoints = ({ geometry, color, size, opacity }: any) => {
 };
 
 // ==========================================
-// 🌟 3. 统一向左弹出的层叠数据卡片
+// 3. 统一向左弹出的层叠数据卡片
 // ==========================================
 const StackedTacticalHUD = ({ records, color, categoryName, isImageStyle, router }: any) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -205,7 +205,7 @@ const StackedTacticalHUD = ({ records, color, categoryName, isImageStyle, router
 };
 
 // ==========================================
-// 🌟 4. 巨型雷达荧光信标
+// 4. 巨型雷达荧光信标
 // ==========================================
 const TacticalPoint = ({ position, color, isActive, records, categoryName, isImageStyle, router }: any) => {
   return (
@@ -230,7 +230,7 @@ const TacticalPoint = ({ position, color, isActive, records, categoryName, isIma
 };
 
 // ==========================================
-// 🌟 5. 解析二进制点云并注入发光粒子特效
+// 5. 解析二进制点云并注入发光粒子特效
 // ==========================================
 const DijiangParticleModel = () => {
   const [pointGeometry, setPointGeometry] = useState<THREE.BufferGeometry | null>(null);
@@ -287,7 +287,7 @@ const DijiangParticleModel = () => {
 
   return (
     <group>
-      {/* 🌟 颜色已经改回了黄色：#eab308 */}
+      {/* 颜色已经改回了黄色：#eab308 */}
       <BlinkingPoints geometry={pointGeometry} color="#eab308" size={0.035} opacity={0.7} />
     </group>
   );
@@ -296,10 +296,10 @@ const DijiangParticleModel = () => {
 const HologramShip = ({ activeCategory, currentRecords, router }: any) => {
   return (
     <Float speed={2} rotationIntensity={0.05} floatIntensity={0.5}>
-      {/* 👇 调整这里的 scale 和 position 来控制整体大小和位置 👇 */}
+      {/* 调整这里的 scale 和 position 来控制整体大小和位置 */}
       <group scale={1} position={[1.2, 0.8, 1]}>
 
-        {/* 👇 调整这里的 rotation 控制模型的旋转角度 (X, Y, Z轴，弧度制) 👇 */}
+        {/* 调整这里的 rotation 控制模型的旋转角度 (X, Y, Z轴，弧度制) */}
         <group rotation={[Math.PI / 0.9, -0.2, 3.0]}>
 
           <DijiangParticleModel />
@@ -317,7 +317,7 @@ const HologramShip = ({ activeCategory, currentRecords, router }: any) => {
 };
 
 // ==========================================
-// 🌟 6. 核心页面渲染
+// 6. 核心页面渲染
 // ==========================================
 export default function DijiangModel({ posts = [], chatters = [], moments = [] }: any) {
   const router = useRouter();
@@ -524,7 +524,7 @@ export default function DijiangModel({ posts = [], chatters = [], moments = [] }
       `}} />
 
       {/* ========================================== */}
-      {/* 🌟 罗德岛人事中心：干员档案板 (Operator Profile) */}
+      {/* 罗德岛人事中心：干员档案板 (Operator Profile) */}
       {/* ========================================== */}
       {rpgStats && (
         <div className="w-full max-w-6xl mb-8 px-4 z-30 flex flex-col gap-4 relative mt-2">
@@ -618,7 +618,7 @@ export default function DijiangModel({ posts = [], chatters = [], moments = [] }
       )}
 
       {/* ========================================== */}
-      {/* 🌟 全图鉴 Modal 面板 (破除层级遮挡，移至根节点最上方) */}
+      {/* 全图鉴 Modal 面板 (破除层级遮挡，移至根节点最上方) */}
       {/* ========================================== */}
       <AnimatePresence>
         {showCatalog && rpgStats && (
@@ -710,7 +710,7 @@ export default function DijiangModel({ posts = [], chatters = [], moments = [] }
         )}
       </AnimatePresence>
 
-      {/* 🌟 中心舰船区域 (调整为 h-[75vh] 提升纵向空间) */}
+      {/* 中心舰船区域 (调整为 h-[75vh] 提升纵向空间) */}
       <div className="w-full h-[75vh] min-h-[750px] relative pointer-events-none mt-4 z-40">
 
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#eab308]/10 blur-[120px] rounded-full" />

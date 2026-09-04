@@ -30,7 +30,7 @@ export default function TimelineNode({ post, index, onDelete }: Props) {
       {/* 卡片容器 */}
       <div className="order-1 w-full md:w-5/12 group relative">
 
-        {/* 👇 悬浮管理工具栏 */}
+        {/* 悬浮管理工具栏 */}
         <div className={`absolute top-4 ${isLeft ? 'right-4' : 'left-4'} z-30 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-y-2 group-hover:translate-y-0`}>
           <Link
             href={`/editor?id=${post.slug}&type=post`}

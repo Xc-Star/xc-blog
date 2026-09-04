@@ -99,7 +99,7 @@ export default function MomentList({ moments, authorName, avatarUrl }: any) {
       }
       if (newUrls.length > 0) {
         setNewMoment(prev => ({ ...prev, images: [...prev.images, ...newUrls] }));
-        showToast(`✅ 成功添加 ${newUrls.length} 张图片`, "success");
+        showToast(`成功添加 ${newUrls.length} 张图片`, "success");
       }
     } catch (error: any) {
       showToast(`连接异常: ${error.message}`, "error");
@@ -120,7 +120,7 @@ export default function MomentList({ moments, authorName, avatarUrl }: any) {
     if (imageUrlInput.trim()) {
       setNewMoment(prev => ({ ...prev, images: [...prev.images, imageUrlInput.trim()] }));
       setImageUrlInput('');
-      showToast("✅ 已添加网络图片", "success");
+      showToast("已添加网络图片", "success");
     }
   };
 
@@ -130,7 +130,7 @@ export default function MomentList({ moments, authorName, avatarUrl }: any) {
       return;
     }
     setIsSubmitting(true);
-    showToast("🚀 正在强行直连 Python 引擎...", "info");
+    showToast("正在强行直连 Python 引擎...", "info");
 
     try {
       const payload = {
@@ -147,15 +147,15 @@ export default function MomentList({ moments, authorName, avatarUrl }: any) {
       });
 
       if (data.success) {
-        showToast("🎉 发布成功！正在刷新...", "success");
+        showToast("发布成功！正在刷新...", "success");
         setIsPublishOpen(false);
         setNewMoment({ content: '', location: '', images: [] });
         setTimeout(() => window.location.reload(), 1000);
       } else {
-        showToast(`⚠️ 后端拒绝了请求：${data.message}`, "error");
+        showToast(`后端拒绝了请求：${data.message}`, "error");
       }
     } catch (error: any) {
-      showToast(`🚨 请求彻底断裂：${error.message}`, "error");
+      showToast(`请求彻底断裂：${error.message}`, "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -172,7 +172,7 @@ export default function MomentList({ moments, authorName, avatarUrl }: any) {
       });
 
       if (data.success) {
-        showToast("🗑️ 说说已彻底删除", "success");
+        showToast("说说已彻底删除", "success");
         setTimeout(() => window.location.reload(), 1000);
       } else {
         showToast(`删除失败: ${data.message}`, "error");
@@ -227,7 +227,7 @@ export default function MomentList({ moments, authorName, avatarUrl }: any) {
     );
   };
 
-  // 🌟 将卡片渲染抽象为一个函数，方便分列渲染
+  // 将卡片渲染抽象为一个函数，方便分列渲染
   const renderMomentCard = (moment: any) => (
     <motion.div
       key={moment.id}
@@ -302,7 +302,7 @@ export default function MomentList({ moments, authorName, avatarUrl }: any) {
         </div>
       </div>
 
-      {/* 🌟 完美的 Flexbox 分列瀑布流！彻底告别错位和缝隙！ */}
+      {/* 完美的 Flexbox 分列瀑布流！彻底告别错位和缝隙！ */}
       <LayoutGroup>
         {processedMoments.length > 0 ? (
           <div className="flex flex-col md:flex-row gap-8 pb-32 w-full items-start">

@@ -25,7 +25,7 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
-  // 🌟 这里新增了 /tree 路由
+  // 这里新增了 /tree 路由
   const navLinks = [
     { name: '首页', href: '/' },
     { name: '项目', href: '/projects' },
@@ -34,11 +34,11 @@ export default function Navbar() {
     { name: '音乐', href: '/music' },
     { name: '说说', href: '/moments' },
     { name: '杂谈', href: '/chatter' },
-    { name: '🌳 灵境', href: '/tree' }, // <--- 新增的入口在这里喵！
-    { name: '📝 草稿箱', href: '/drafts' },
+    { name: '灵境', href: '/tree' },
+    { name: '草稿箱', href: '/drafts' },
     { name: '友链', href: '/friends' },
     { name: '关于', href: '/about' },
-    { name: '⚙️ 设置', href: '/settings' },
+    { name: '设置', href: '/settings' },
   ];
 
   const handleMinimize = () => {
@@ -60,7 +60,7 @@ export default function Navbar() {
   const handleLogout = async () => {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
-      showToast("👋 已安全退出管理台", "success");
+      showToast("已安全退出管理台", "success");
     } finally {
       window.location.assign('/login');
     }

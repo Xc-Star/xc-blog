@@ -9,7 +9,7 @@ import { Plus, Pencil, Trash2, AlertTriangle, Save, Edit3, X, CloudUpload, Spark
 import { useToast } from '../../components/ToastProvider';
 import FloatingImageTool from '../../components/editor/FloatingImageTool';
 
-// 🌟 新增：引入配置
+// 新增：引入配置
 import { siteConfig } from '../../siteConfig';
 
 const containerVariants: Variants = {
@@ -41,7 +41,7 @@ export default function FriendsBoard() {
   const [friendModal, setFriendModal] = useState<{ isOpen: boolean; mode: 'add' | 'edit'; data: Partial<Friend> }>({ isOpen: false, mode: 'add', data: {} });
   const [isImgToolOpen, setIsImgToolOpen] = useState(false);
 
-  // 🌟 新增：控制复制按钮的状态和读取配置模板
+  // 新增：控制复制按钮的状态和读取配置模板
   const [isCopied, setIsCopied] = useState(false);
   const applyFormat = siteConfig.friendLinkApplyFormat;
 
@@ -58,9 +58,9 @@ export default function FriendsBoard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ friends: nextList })
       });
-      showToast(data.success ? "✅ 友链已保存，前台已生效" : `❌ 保存失败：${data.message}`, data.success ? "success" : "error");
+      showToast(data.success ? "友链已保存，前台已生效" : `保存失败：${data.message}`, data.success ? "success" : "error");
     } catch (error: any) {
-      showToast(`❌ 保存失败：${error.message}`, "error");
+      showToast(`保存失败：${error.message}`, "error");
     }
   };
 
@@ -202,7 +202,7 @@ export default function FriendsBoard() {
         ))}
       </motion.div>
 
-      {/* 🌟 新增：申请友链引导区 (与前端组件一致的移动端适配) */}
+      {/* 新增：申请友链引导区 (与前端组件一致的移动端适配) */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -211,7 +211,7 @@ export default function FriendsBoard() {
         className="mt-14 md:mt-20 bg-white/40 dark:bg-slate-800/40 backdrop-blur-xl border border-white/50 dark:border-slate-700/50 rounded-2xl md:rounded-3xl p-5 md:p-8 max-w-3xl mx-auto text-center shadow-lg md:shadow-xl relative"
       >
         <h2 className="text-lg md:text-2xl font-black text-slate-900 dark:text-white mb-2 md:mb-4 tracking-wider">
-          ✨ 建立神经连接
+          <Sparkles size={20} className="text-indigo-500" /> 建立神经连接
         </h2>
         <p className="text-xs md:text-base text-slate-600 dark:text-slate-400 font-serif mb-4 md:mb-6">
           欢迎各位大佬交换友链！请一键复制下方格式，通过邮件或社交平台联系我：

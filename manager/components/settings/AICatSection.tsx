@@ -22,7 +22,7 @@ export default function AICatSection({ formData, handleUpdate, saveConfig }: any
   const [models, setModels] = useState<string[]>([]);
   const [isLoadingModels, setIsLoadingModels] = useState(false);
 
-  // 🌟 核心防崩魔法：将系统提示词的状态独立出来
+  // 核心防崩魔法：将系统提示词的状态独立出来
   const [localPrompt, setLocalPrompt] = useState('');
 
   // 初始化时，如果后端传来的是安全转义的 \n，我们把它还原成真实的换行，让文本框正常显示
@@ -50,23 +50,23 @@ export default function AICatSection({ formData, handleUpdate, saveConfig }: any
       });
       if (data.success && data.models) {
         setModels(data.models);
-        showToast(`✅ ${data.message}`, 'success');
+        showToast(`${data.message}`, 'success');
       } else {
-        showToast(`❌ ${data.message}`, 'error');
+        showToast(`${data.message}`, 'error');
       }
     } catch (error: any) {
-      showToast(`❌ 获取失败：${error.message}`, 'error');
+      showToast(`获取失败：${error.message}`, 'error');
     } finally {
       setIsLoadingModels(false);
     }
   };
 
-  // 🌟 拦截文本框输入
+  // 拦截文本框输入
   const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const realText = e.target.value;
     setLocalPrompt(realText); // 文本框里保持真实的物理换行，方便你阅读和编辑
 
-    // ⚠️ 传给父组件和队列时，强行把物理换行替换为单行字面量 "\\n"
+    // 传给父组件和队列时，强行把物理换行替换为单行字面量 "\\n"
     // 这样 Python 写文件时就是安全的： systemPrompt: "第一行\n第二行" (不会断裂)
     const safeTextForBackend = realText.replace(/\n/g, '\\n');
     updateConfig('systemPrompt', safeTextForBackend);
@@ -165,8 +165,8 @@ export default function AICatSection({ formData, handleUpdate, saveConfig }: any
             <MessageSquareText size={16} className="text-slate-400 group-focus-within:text-indigo-500 transition-colors" /> 灵魂 Prompt (性格设定)
           </label>
           <textarea
-            value={localPrompt} // 🌟 绑定本地的安全显示状态
-            onChange={handlePromptChange} // 🌟 使用我们写的拦截函数
+            value={localPrompt} // 绑定本地的安全显示状态
+            onChange={handlePromptChange} // 使用我们写的拦截函数
             className="w-full bg-white/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl py-4 px-5 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 min-h-[200px] resize-y font-medium text-sm leading-relaxed custom-scrollbar"
             placeholder="输入 AI 的性格、行为模式和约束..."
           />

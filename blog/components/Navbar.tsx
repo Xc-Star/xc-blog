@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, PanInfo } from 'framer-motion';
+import { X } from 'lucide-react';
 import { siteConfig } from '../siteConfig';
 
 export default function Navbar() {
@@ -12,7 +13,7 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  // --- 🌟 物理引擎：菜单转动逻辑 ---
+  // --- 物理引擎：菜单转动逻辑 ---
   const wheelRef = useRef<HTMLDivElement>(null);
   const rawRotation = useMotionValue(0);
   const smoothRotation = useSpring(rawRotation, { stiffness: 200, damping: 25 });
@@ -35,7 +36,7 @@ export default function Navbar() {
     rawRotation.set(rawRotation.get() + deltaAngle);
   };
 
-  // --- 🌟 物理引擎：手机端按钮拖拽逻辑 ---
+  // --- 物理引擎：手机端按钮拖拽逻辑 ---
   const dragY = useMotionValue(0);
   const [constraints, setConstraints] = useState({ top: 0, bottom: 0 });
 
@@ -81,7 +82,7 @@ export default function Navbar() {
     { name: '关于', href: '/about' },
   ];
 
-  // 🌟 核心：过滤掉“灵境”，专供手机端使用，保证圆盘自动重新均匀排布
+  // 核心：过滤掉“灵境”，专供手机端使用，保证圆盘自动重新均匀排布
   const mobileNavLinks = navLinks.filter(link => link.href !== '/tree');
 
   return (
@@ -109,7 +110,7 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* 📱 手机端：可拖拽吸附的触发球 */}
+      {/* 手机端：可拖拽吸附的触发球 */}
       <div className="md:hidden">
         <motion.button
           drag="y"
@@ -157,15 +158,15 @@ export default function Navbar() {
                   className="w-full h-full rounded-full border border-white/30 dark:border-slate-500/50 bg-white/40 dark:bg-slate-800/50 backdrop-blur-3xl shadow-[0_0_50px_rgba(0,0,0,0.3)] pointer-events-auto relative cursor-grab active:cursor-grabbing"
                 >
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-700 border-4 border-slate-300 dark:border-slate-500 flex items-center justify-center shadow-inner z-10">
-                    <button onClick={() => setIsMobileMenuOpen(false)} className="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center text-white font-black shadow-lg hover:bg-red-500 hover:rotate-90 transition-all duration-300 active:scale-95">
-                      ✕
+                    <button onClick={() => setIsMobileMenuOpen(false)} className="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center text-white font-black shadow-lg hover:bg-red-500 hover:rotate-90 transition-all duration-300 active:scale-95" aria-label="关闭菜单">
+                      <X size={20} />
                     </button>
                   </div>
 
-                  {/* 🌟 手机端轮盘渲染：使用过滤后的 mobileNavLinks */}
+                  {/* 手机端轮盘渲染：使用过滤后的 mobileNavLinks */}
                   {mobileNavLinks.map((link, index) => {
                     const isActive = pathname === link.href || pathname === `${link.href}/`;
-                    // 🌟 角度计算也会基于过滤后的长度，保证图标自动均匀排布！
+                    // 角度计算也会基于过滤后的长度，保证图标自动均匀排布！
                     const angle = index * (360 / mobileNavLinks.length);
 
                     return (

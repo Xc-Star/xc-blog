@@ -16,7 +16,7 @@ export default async function ChatterPage() {
   const chatters = (await getDocuments('chatter')).map(({ slug, data, content }) => ({
     slug,
     title: data.title || '',
-    date: data.date || '1970-01-01', // 👇 核心修复：加上日期兜底防崩溃
+    date: data.date || '1970-01-01', // 核心修复：加上日期兜底防崩溃
     tags: data.tags || [],
     mood: data.mood || '',
     cover: data.cover || '',

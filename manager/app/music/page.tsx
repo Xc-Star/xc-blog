@@ -22,10 +22,10 @@ export default function MusicPage() {
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // 🌟 1. 核心修复：改用 State 存储解析后的歌词，确保异步更新能触发 UI 刷新
+  // 1. 核心修复：改用 State 存储解析后的歌词，确保异步更新能触发 UI 刷新
   const [parsedLyrics, setParsedLyrics] = useState<any[]>([]);
 
-  // 🌟 2. 核心修复：深度监控歌词数据流
+  // 2. 核心修复：深度监控歌词数据流
   useEffect(() => {
     // 切歌瞬间，先清空旧歌词，显示加载状态
     if (!currentSong) {
@@ -84,7 +84,7 @@ export default function MusicPage() {
     return Math.max(0, idx);
   }, [currentTime, parsedLyrics]);
 
-  // 🌟 保持修复：精准容器滚动逻辑，不影响全局滚动条
+  // 保持修复：精准容器滚动逻辑，不影响全局滚动条
   useEffect(() => {
     if (activeLyricRef.current && lyricContainerRef.current && activeTab === 'lyrics') {
       const container = lyricContainerRef.current;

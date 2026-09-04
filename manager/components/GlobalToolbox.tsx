@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Calculator } from 'lucide-react';
 
 // 【引入你的独立工具模块】
 import CalculatorTool from './toolbox/CalculatorTool';
@@ -10,8 +11,7 @@ import CalculatorTool from './toolbox/CalculatorTool';
 // 【核心架构：插件注册表】
 // 以后加新工具，只需要往这个数组里添加对象即可，完全解耦！
 const TOOL_REGISTRY = [
-  { id: 'calc', name: '计算器', icon: '🧮', component: <CalculatorTool /> },
-  // { id: 'tomato', name: '番茄钟', icon: '🍅', component: <TomatoClock /> },
+  { id: 'calc', name: '计算器', Icon: Calculator, component: <CalculatorTool /> },
 ];
 
 export default function GlobalToolbox() {
@@ -40,9 +40,9 @@ export default function GlobalToolbox() {
                 <button
                   key={tool.id}
                   onClick={() => setActiveToolId(activeToolId === tool.id ? null : tool.id)}
-                  className={`text-xs font-bold px-3 py-1.5 rounded-full transition-colors ${activeToolId === tool.id ? 'bg-indigo-500 text-white shadow-md' : 'bg-white/50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}`}
+                  className={`text-xs font-bold px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5 ${activeToolId === tool.id ? 'bg-indigo-500 text-white shadow-md' : 'bg-white/50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}`}
                 >
-                  {tool.icon} {tool.name}
+                  <tool.Icon size={14} /> {tool.name}
                 </button>
               ))}
             </div>

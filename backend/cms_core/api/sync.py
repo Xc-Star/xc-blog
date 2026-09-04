@@ -22,6 +22,6 @@ async def check_blog_path(payload: dict | None = Body(default=None)):
         for table, sql in count_queries.items():
             row = fetch_one(sql)
             counts[table] = row["count"] if row else 0
-        return {"success": True, "message": "✅ 数据库已就绪。", "counts": counts}
+        return {"success": True, "message": "数据库已就绪。", "counts": counts}
     except Exception as e:
         return {"success": False, "message": f"数据库检测失败: {str(e)}"}

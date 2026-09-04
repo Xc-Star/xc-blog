@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BackButton from '../../components/BackButton'; // 注意层级路径
+import ProjectIcon from '../../components/ProjectIcon';
 import { projectsData } from '../../data/projects';
 
 export default function ProjectsBoard() {
@@ -78,7 +79,7 @@ export default function ProjectsBoard() {
 
                 <div className="flex items-start justify-between mb-4 relative z-10">
                   <div className="flex items-center gap-4">
-                    <span className="text-4xl">{project.icon}</span>
+                    <ProjectIcon name={project.icon} size={36} className="text-indigo-500 shrink-0" />
                     <h2 className="text-2xl font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                       {project.name}
                     </h2>

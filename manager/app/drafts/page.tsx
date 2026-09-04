@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../../components/Navbar';
 import PageTransition from '../../components/PageTransition';
 import { ToastProvider, useToast } from '../../components/ToastProvider';
-import { AlertTriangle, Search, Trash2, X, Sparkles, Pencil } from 'lucide-react';
+import { AlertTriangle, Search, Trash2, X, Sparkles, Pencil, FileText } from 'lucide-react';
 
 function DraftsContent() {
   const { showToast } = useToast();
@@ -15,7 +15,7 @@ function DraftsContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // 👇 自定义弹窗状态管理
+  // 自定义弹窗状态管理
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; id: string | null; title: string | null }>({
     isOpen: false,
     id: null,
@@ -49,7 +49,7 @@ function DraftsContent() {
     fetchDrafts();
   }, []);
 
-  // 🗑️ 核心逻辑：执行真实的销毁操作
+  // 核心逻辑：执行真实的销毁操作
   const confirmDelete = async () => {
     if (!deleteModal.id) return;
     const id = deleteModal.id;
@@ -62,7 +62,7 @@ function DraftsContent() {
       });
 
       if (data.success) {
-        showToast("🗑️ 草稿已被彻底销毁", "success");
+        showToast("草稿已被彻底销毁", "success");
         setDrafts(prev => prev.filter(draft => draft.id !== id));
       } else {
         showToast(`销毁失败: ${data.message}`, "error");
@@ -92,7 +92,7 @@ function DraftsContent() {
       <Navbar />
 
       {/* ---------------------------------------------------------
-          💎 自定义绝美确认弹窗 (与杂谈页保持高度统一)
+          自定义绝美确认弹窗 (与杂谈页保持高度统一)
       --------------------------------------------------------- */}
       <AnimatePresence>
         {deleteModal.isOpen && (
@@ -147,7 +147,7 @@ function DraftsContent() {
           <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
               <h1 className="text-4xl font-black text-slate-800 dark:text-white mb-3 tracking-wider flex items-center gap-3">
-                📝 创作草稿箱
+                <FileText size={30} /> 创作草稿箱
                 <span className="text-sm font-bold bg-indigo-500 text-white px-3 py-1 rounded-full">{drafts.length}</span>
               </h1>
               <p className="text-slate-500 dark:text-slate-400 font-medium text-sm flex items-center gap-2">

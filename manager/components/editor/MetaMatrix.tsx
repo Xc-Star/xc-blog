@@ -133,7 +133,7 @@ export default function MetaMatrix({
           </div>
         )}
 
-        {/* 🌟 4. 摘要区 (补回丢失的代码) */}
+        {/* 4. 摘要区 (补回丢失的代码) */}
         {type !== 'about' && (
           <div className="flex flex-col animate-in fade-in slide-in-from-bottom duration-700">
             <Label icon={FileText} text="Description" color="border-emerald-500" />

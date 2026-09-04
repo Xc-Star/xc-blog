@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import { Snowflake } from "lucide-react";
 
 export default function GlobalSnow() {
   const [isWinter, setIsWinter] = useState(false);
@@ -32,9 +33,7 @@ export default function GlobalSnow() {
   }, []);
 
   const snowParticles = useMemo(() => {
-    const types = ["❄", "❅", "❆"];
     return Array.from({ length: 40 }).map(() => ({
-      char: types[Math.floor(Math.random() * types.length)],
       size: Math.random() * 15 + 10,
       left: Math.random() * 100,
       duration: Math.random() * 6 + 4,
@@ -56,7 +55,6 @@ export default function GlobalSnow() {
           key={i}
           className="absolute text-white select-none pointer-events-none"
           style={{
-            fontSize: p.size,
             left: `${p.left}vw`,
             top: "-20px",
             opacity: p.opacity,
@@ -64,7 +62,7 @@ export default function GlobalSnow() {
             filter: "drop-shadow(0 0 2px rgba(255,255,255,0.8))",
           }}
         >
-          {p.char}
+          <Snowflake size={p.size} strokeWidth={1.5} />
         </div>
       ))}
 

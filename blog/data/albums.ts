@@ -1,4 +1,4 @@
-// 🛡️ 相册数据由控制台写入共享内容卷 data/albums.json，此处仅做实时代理转发。
+// 相册数据由控制台写入共享内容卷 data/albums.json，此处仅做实时代理转发。
 import defaults from './defaults/albums.json';
 import { getRuntime, liveArray } from '../lib/runtimeStore';
 

@@ -3,6 +3,7 @@ import { cmsJson } from '@/lib/cmsApi';
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { UserRound, AppWindow, Orbit, Music2, Images, Puzzle, Zap, PawPrint, KeyRound, Rocket, RefreshCw, Inbox } from 'lucide-react';
 import { siteConfig } from '../../siteConfig';
 import Navbar from '../../components/Navbar';
 import PageTransition from '../../components/PageTransition';
@@ -16,7 +17,7 @@ import RepoSection from '../../components/settings/RepoSection';
 import DisplaySection from '../../components/settings/DisplaySection';
 import DanmakuSection from '../../components/settings/DanmakuSection';
 import FooterSection from '../../components/settings/FooterSection';
-// 👇 🌟 引入刚写的 AI 配置组件
+// 引入刚写的 AI 配置组件
 import AICatSection from '../../components/settings/AICatSection';
 import PasswordSection from '../../components/settings/PasswordSection';
 
@@ -39,7 +40,7 @@ function SettingsContent() {
     buildDate: siteConfig.buildDate || "2026-03-23T00:00:00",
     icpConfig: siteConfig.icpConfig || { name: "", link: "" },
     footerBadges: [...(siteConfig.footerBadges || [])],
-    // 👇 🌟 初始化小猫 AI 配置数据
+    // 初始化小猫 AI 配置数据
     geminiConfig: siteConfig.geminiConfig || {
       baseUrl: 'https://api.openai.com/v1',
       apiKey: '',
@@ -60,7 +61,7 @@ function SettingsContent() {
         const data = await cmsJson<{ success: boolean; message?: string; data?: any }>('/api/config/get');
 
         if (data.success && data.data) {
-          console.log("✅ 成功从后端拉取到真实配置:", data.data);
+          console.log("成功从后端拉取到真实配置:", data.data);
           setFormData((prev: any) => ({
             ...prev,
             ...data.data,
@@ -69,15 +70,15 @@ function SettingsContent() {
             buildDate: data.data.buildDate || prev.buildDate,
             icpConfig: data.data.icpConfig || prev.icpConfig,
             footerBadges: data.data.footerBadges ? [...data.data.footerBadges] : prev.footerBadges,
-            // 👇 🌟 合并后端发来的小猫配置
+            // 合并后端发来的小猫配置
             geminiConfig: { ...(prev.geminiConfig || {}), ...(data.data.geminiConfig || {}) }
           }));
         } else {
-          console.error("❌ 后端返回失败:", data.message);
+          console.error("后端返回失败:", data.message);
           showToast("读取后端配置失败，当前显示为本地静态数据", "warning");
         }
       } catch (error) {
-        console.error("❌ 请求后端配置通道断开:", error);
+        console.error("请求后端配置通道断开:", error);
         showToast("无法连接到 Python 后端服务", "error");
       }
     };
@@ -149,13 +150,13 @@ function SettingsContent() {
     const exists = formData.cloudMusicIds.some((id: string | number) => String(id) === targetId);
 
     if (exists) {
-      showToast(`⚠️ 《${queryResult.name}》已经在列表里啦，不要重复添加！`, "warning");
+      showToast(`《${queryResult.name}》已经在列表里啦，不要重复添加！`, "warning");
     } else {
       handleUpdate('cloudMusicIds', [...formData.cloudMusicIds, targetId]);
       setMusicDetails(prev => ({ ...prev, [targetId]: queryResult }));
       setQueryResult(null);
       handleUpdate('newMusicId', '');
-      showToast("✅ 成功存入播放列表！", "success");
+      showToast("成功存入播放列表！", "success");
     }
   };
 
@@ -169,27 +170,27 @@ function SettingsContent() {
         body: JSON.stringify({ updates })
       });
       if (data.success) {
-        showToast(`✅ 【${label}】已保存，前台已生效`, "success");
+        showToast(`【${label}】已保存，前台已生效`, "success");
       } else {
-        showToast(`❌ 保存失败：${data.message}`, "error");
+        showToast(`保存失败：${data.message}`, "error");
       }
     } catch (error: any) {
-      showToast(`❌ 保存失败：${error.message}`, "error");
+      showToast(`保存失败：${error.message}`, "error");
     }
   };
 
-  // 👇 🌟 在菜单里增加 AI 猫咪入口
+  // 在菜单里增加 AI 猫咪入口
   const menuItems = [
-    { id: 'profile', name: '个人名片设置', icon: '👤' },
-    { id: 'display', name: '视窗画面设置', icon: '🪟' },
-    { id: 'background', name: '视觉背景配置', icon: '🌌' },
-    { id: 'music', name: '音乐播放设置', icon: '🎵' },
-    { id: 'gallery', name: '图库配置管理', icon: '🖼️' },
-    { id: 'footer', name: '首页底部设置', icon: '🧩' },
-    { id: 'danmaku', name: '全站弹幕设置', icon: '⚡' },
-    { id: 'aicat', name: 'AI 煤球配置', icon: '🐾' }, // 👈 新增的小猫设置
-    { id: 'password', name: '管理密码', icon: '🔐' },
-    { id: 'repo', name: '项目仓库设置', icon: '🚀' },
+    { id: 'profile', name: '个人名片设置', Icon: UserRound },
+    { id: 'display', name: '视窗画面设置', Icon: AppWindow },
+    { id: 'background', name: '视觉背景配置', Icon: Orbit },
+    { id: 'music', name: '音乐播放设置', Icon: Music2 },
+    { id: 'gallery', name: '图库配置管理', Icon: Images },
+    { id: 'footer', name: '首页底部设置', Icon: Puzzle },
+    { id: 'danmaku', name: '全站弹幕设置', Icon: Zap },
+    { id: 'aicat', name: 'AI 煤球配置', Icon: PawPrint },
+    { id: 'password', name: '管理密码', Icon: KeyRound },
+    { id: 'repo', name: '项目仓库设置', Icon: Rocket },
   ];
 
   return (
@@ -205,15 +206,15 @@ function SettingsContent() {
               <nav className="flex flex-col gap-2">
                 {menuItems.map((item) => (
                   <button key={item.id} onClick={() => setActiveTab(item.id)} className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 font-bold text-sm ${activeTab === item.id ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/30 translate-x-1' : 'text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-800/50'}`}>
-                    <span>{item.icon}</span>{item.name}
+                    <item.Icon size={16} className="shrink-0" />{item.name}
                   </button>
                 ))}
               </nav>
             </div>
             <div className="bg-amber-500/10 border border-amber-500/30 rounded-3xl p-4 mt-4">
-              <p className="text-xs font-black text-amber-600 dark:text-amber-400 mb-2">🔄 数据中枢操作</p>
-              <button className="w-full py-2 bg-amber-500/20 text-amber-700 dark:text-amber-300 rounded-xl text-xs font-bold hover:bg-amber-500 hover:text-white transition-all text-left px-4 flex justify-between">
-                <span>拉取 my-blog 数据</span><span>📥</span>
+              <p className="text-xs font-black text-amber-600 dark:text-amber-400 mb-2 flex items-center gap-1.5"><RefreshCw size={14} /> 数据中枢操作</p>
+              <button className="w-full py-2 bg-amber-500/20 text-amber-700 dark:text-amber-300 rounded-xl text-xs font-bold hover:bg-amber-500 hover:text-white transition-all text-left px-4 flex justify-between items-center">
+                <span>拉取 my-blog 数据</span><Inbox size={14} />
               </button>
             </div>
           </div>
@@ -227,7 +228,7 @@ function SettingsContent() {
               {activeTab === 'gallery' && <GallerySection key="gallery" formData={formData} handleUpdate={handleUpdate} saveConfig={saveConfig} />}
               {activeTab === 'footer' && <FooterSection key="footer" formData={formData} handleUpdate={handleUpdate} saveConfig={saveConfig} />}
               {activeTab === 'danmaku' && <DanmakuSection key="danmaku" formData={formData} handleUpdate={handleUpdate} saveConfig={saveConfig} />}
-              {/* 👇 🌟 挂载 AI 猫咪面板 */}
+              {/* 挂载 AI 猫咪面板 */}
               {activeTab === 'aicat' && <AICatSection key="aicat" formData={formData} handleUpdate={handleUpdate} saveConfig={saveConfig} />}
               {activeTab === 'password' && <PasswordSection key="password" />}
 

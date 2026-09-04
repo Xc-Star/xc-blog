@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { Pencil, RadioTower } from 'lucide-react';
 
-// 🌟 1. 核心升级：引入现代统一解析流，并挂载 remark-gfm
+// 1. 核心升级：引入现代统一解析流，并挂载 remark-gfm
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
-import remarkGfm from 'remark-gfm'; // 🌟 引入 GFM 以支持 ~~删除线~~
+import remarkGfm from 'remark-gfm'; // 引入 GFM 以支持 ~~删除线~~
 import remarkMath from 'remark-math';
 import remarkRehype from 'remark-rehype';
 import rehypeHighlight from 'rehype-highlight';
@@ -18,7 +19,7 @@ import PageTransition from '../../components/PageTransition';
 import { siteConfig } from '../../siteConfig';
 import { getDocuments, getMoments, getPage, type DocumentEntry, type MomentEntry } from '../../lib/content.server';
 
-// 🌟 引入刚刚写好的前端交互引擎
+// 引入刚刚写好的前端交互引擎
 import AboutClient from '../../components/AboutClient';
 
 function getDocActivities(entries: DocumentEntry[], dirName: string, typeLabel: '文章' | '杂谈', linkPrefix: string) {
@@ -49,21 +50,21 @@ export default async function AdminAboutPage() {
   try {
     const page = await getPage('about');
     if (!page?.content.trim()) throw new Error('about 页面不存在或为空');
-    // 🌟 改为 let，以便进行文本预清洗
+    // 改为 let，以便进行文本预清洗
     let data = { cover: page.cover };
     let content = page.content;
 
     if (data.cover) coverImage = data.cover;
 
     // ==========================================
-    // 🌟 解析前物理清洗区
+    // 解析前物理清洗区
     // ==========================================
     // 1. 强行给没有语言标记的代码块加上 cpp 标签，防止侦测失败
     content = content.replace(/^```\s*$/gm, '```cpp');
     // 2. 强行修复数字列表缺少空格导致无法渲染为列表的 Bug (1.百度 -> 1. 百度)
     content = content.replace(/^(\s*\d+)\.([^ \n])/gm, '$1. $2');
 
-    // 3. 🌟 拯救被 Markdown 引擎吞噬的“连续空行” (同步文章页的阵法)
+    // 3. 拯救被 Markdown 引擎吞噬的“连续空行” (同步文章页的阵法)
     content = content.replace(/\r\n/g, '\n').replace(/^[ \t]+$/gm, '');
     const blocks = content.split(/(```[\s\S]*?```|~~~[\s\S]*?~~~)/g);
     content = blocks.map((block, index) => {
@@ -75,13 +76,13 @@ export default async function AdminAboutPage() {
     }).join('');
     // ==========================================
 
-    // 🌟 2. 启用全新解析引擎：支持代码高亮与删除线
+    // 2. 启用全新解析引擎：支持代码高亮与删除线
     const processedContent = await unified()
       .use(remarkParse)
-      .use(remarkGfm) // 🌟 挂载 GFM 解析
+      .use(remarkGfm) // 挂载 GFM 解析
       .use(remarkMath)
       .use(remarkRehype, { allowDangerousHtml: true })
-      // 🌟 核心升级：开启自动侦测，并限制白名单，大幅提高 C++ 等语言的猜中率
+      // 核心升级：开启自动侦测，并限制白名单，大幅提高 C++ 等语言的猜中率
       // @ts-ignore
       .use(rehypeHighlight, {
         detect: true,
@@ -97,7 +98,7 @@ export default async function AdminAboutPage() {
     console.error("读取 about.md 失败", e);
   }
 
-  // 🌟 3. 获取所有的活动动态
+  // 3. 获取所有的活动动态
   const [postDocs, chatterDocs, momentEntries] = await Promise.all([
     getDocuments('post'),
     getDocuments('chatter'),
@@ -119,7 +120,7 @@ export default async function AdminAboutPage() {
       <PageTransition>
         <main className="w-[95%] md:w-[90%] max-w-4xl mx-auto mt-24 md:mt-28 relative z-10">
 
-          {/* 🌟 注入 About 页面专用的高颜值 Prose 全局样式 */}
+          {/* 注入 About 页面专用的高颜值 Prose 全局样式 */}
           <style dangerouslySetInnerHTML={{ __html: `
             .prose h1 { font-size: 1.8rem !important; font-weight: 900 !important; margin-bottom: 1.2rem !important; margin-top: 2rem !important; line-height: 1.3 !important; color: inherit !important; }
             .prose h2 { font-size: 1.5rem !important; font-weight: 800 !important; margin-bottom: 1rem !important; margin-top: 1.5rem !important; color: inherit !important; }
@@ -138,10 +139,10 @@ export default async function AdminAboutPage() {
             .prose ul ul, .prose ol ul { list-style-type: circle !important; margin-top: 0.25rem !important; margin-bottom: 0.25rem !important; }
             .prose ol ol, .prose ul ol { list-style-type: lower-alpha !important; margin-top: 0.25rem !important; margin-bottom: 0.25rem !important; }
             
-            /* 🌟 删除线强制展现 */
+            /* 删除线强制展现 */
             .prose s, .prose del { text-decoration-line: line-through !important; opacity: 0.6; }
 
-            /* 🌟 引用块专属果冻极客风样式补丁 */
+            /* 引用块专属果冻极客风样式补丁 */
             .prose blockquote {
               border-left: 4px solid #6366f1 !important;
               background-color: rgba(99, 102, 241, 0.05) !important;
@@ -156,7 +157,7 @@ export default async function AdminAboutPage() {
               margin: 0 !important; 
               color: inherit !important;
             }
-            /* 🌟 彻底杀掉 Tailwind Typography 生成的前后伪元素引号！ */
+            /* 彻底杀掉 Tailwind Typography 生成的前后伪元素引号！ */
             .prose blockquote p::before,
             .prose blockquote p::after {
               display: none !important;
@@ -169,7 +170,7 @@ export default async function AdminAboutPage() {
               color: #94a3b8 !important;
             }
             
-            /* 🌟 果冻极客风代码字体：更圆滑、更饱满！大圆角拉满！ */
+            /* 果冻极客风代码字体：更圆滑、更饱满！大圆角拉满！ */
             .prose pre {
               background-color: #282c34 !important; color: #abb2bf !important;
               padding: 1rem !important; border-radius: 1.25rem !important;
@@ -199,12 +200,12 @@ export default async function AdminAboutPage() {
             }
             .dark .prose p code, .dark .prose li code { background-color: rgba(99, 102, 241, 0.2) !important; color: #818cf8 !important; }
             
-            /* 🌟 确保前台生成的 <br> 占据真实的垂直空间 */
+            /* 确保前台生成的 <br> 占据真实的垂直空间 */
             .prose br { display: block !important; content: "" !important; margin-top: 0.5em !important; }
 
             .prose img { display: block !important; margin: 1.5rem auto !important; border-radius: 1rem !important; box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important; max-width: 100% !important; height: auto !important; }
 
-            /* 🌟 Atom One Dark 顶级补丁 */
+            /* Atom One Dark 顶级补丁 */
             .prose pre code .hljs-comment, .prose pre code .hljs-quote { color: #5c6370 !important; font-style: italic !important; }
             .prose pre code .hljs-doctag, .prose pre code .hljs-keyword, .prose pre code .hljs-formula { color: #c678dd !important; }
             .prose pre code .hljs-keyword.type_, .prose pre code .hljs-type { color: #c678dd !important; } 
@@ -230,21 +231,21 @@ export default async function AdminAboutPage() {
             }
           `}} />
 
-          {/* 🌟 4. 控制台专属：悬浮在整个海报右上角的“一键修改”特权按钮 */}
+          {/* 4. 控制台专属：悬浮在整个海报右上角的“一键修改”特权按钮 */}
           <div className="absolute top-4 right-4 md:top-6 md:right-8 z-50">
             <Link
               href="/editor?type=about"
               className="p-2.5 md:px-4 md:py-2.5 rounded-xl md:rounded-2xl bg-white/30 dark:bg-slate-900/40 backdrop-blur-md text-slate-800 dark:text-slate-100 hover:bg-indigo-500 hover:text-white dark:hover:bg-indigo-500 transition-all shadow-lg border border-white/50 dark:border-white/10 group flex items-center gap-2 active:scale-95"
             >
-              <span className="text-base md:text-lg">✏️</span>
+              <Pencil size={18} />
               <span className="text-xs md:text-sm font-bold hidden md:inline-block group-hover:inline-block">修改此页</span>
             </Link>
           </div>
 
-          {/* 🌟 5. 载入前端互动引擎 */}
+          {/* 5. 载入前端互动引擎 */}
           <Suspense fallback={
             <div className="h-96 flex flex-col gap-4 items-center justify-center text-slate-500 font-bold bg-white/40 dark:bg-slate-800/40 rounded-[40px] animate-pulse">
-              <span className="text-3xl">📡</span>
+              <RadioTower size={30} />
               正在连线源石数据库...
             </div>
           }>

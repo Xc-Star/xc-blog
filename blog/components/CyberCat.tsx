@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Fish } from 'lucide-react';
 
 export default function CyberCat() {
   const [isPetted, setIsPetted] = useState(false);
@@ -12,7 +13,7 @@ export default function CyberCat() {
 
   const chatTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // --- 💬 说话功能 ---
+  // --- 说话功能 ---
   const speak = (text: string, duration = 6000) => {
     setSpeech(text);
     if (chatTimeoutRef.current) clearTimeout(chatTimeoutRef.current);
@@ -21,7 +22,7 @@ export default function CyberCat() {
     }, duration);
   };
 
-  // --- 🖱️ 交互事件：摸猫猫 ---
+  // --- 交互事件：摸猫猫 ---
   const handlePetCat = () => {
     if (isPetted) return;
     setIsPetted(true);
@@ -31,7 +32,7 @@ export default function CyberCat() {
     }, 2000);
   };
 
-  // --- 🐟 交互事件：喂小鱼干 ---
+  // --- 交互事件：喂小鱼干 ---
   const handleFeed = async (e: React.MouseEvent) => {
     e.stopPropagation(); // 阻止触发摸猫或拖拽
     if (isThinking) return;
@@ -58,7 +59,7 @@ export default function CyberCat() {
     }
   };
 
-  // --- 💬 交互事件：发送聊天 ---
+  // --- 交互事件：发送聊天 ---
   const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim() || isThinking) return;
@@ -87,7 +88,7 @@ export default function CyberCat() {
     }
   };
 
-  // --- ⏳ 随机挂机语录 ---
+  // --- 随机挂机语录 ---
   useEffect(() => {
     const randomBarks = [
       "喵呜~ 今天天气真不错喵~",
@@ -115,7 +116,7 @@ export default function CyberCat() {
       whileDrag={{ scale: 1.1, cursor: "grabbing" }}
       className="fixed bottom-20 right-20 z-[9999] flex flex-col items-center group cursor-grab active:cursor-grabbing"
     >
-      {/* 💬 聊天气泡 */}
+      {/* 聊天气泡 */}
       <div className="relative w-full flex justify-center mb-6">
         <AnimatePresence>
           {speech && (
@@ -133,13 +134,13 @@ export default function CyberCat() {
         </AnimatePresence>
       </div>
 
-      {/* 🐈 猫咪本体 & 交互按钮区 */}
+      {/* 猫咪本体 & 交互按钮区 */}
       <div className="relative">
 
-        {/* 🌟 核心修改区：去掉了 opacity-0 和 group-hover，让按钮常驻显示 */}
+        {/* 核心修改区：去掉了 opacity-0 和 group-hover，让按钮常驻显示 */}
         <div className="absolute -left-12 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-20">
 
-            {/* 💬 聊天按钮 */}
+            {/* 聊天按钮 */}
             <button
               onClick={(e) => {
                  e.stopPropagation();
@@ -154,14 +155,14 @@ export default function CyberCat() {
               </svg>
             </button>
 
-            {/* 🐟 喂食按钮 */}
+            {/* 喂食按钮 */}
             <button
               onClick={handleFeed}
               disabled={isThinking}
               className={`bg-white/90 dark:bg-slate-700/90 p-2.5 rounded-full shadow-md hover:scale-110 active:scale-95 transition-transform border border-gray-100 dark:border-slate-600 flex items-center justify-center backdrop-blur-sm ${isThinking ? 'opacity-50 cursor-not-allowed' : ''}`}
               title="喂小鱼干"
             >
-              <span className="text-xl leading-none">🐟</span>
+              <Fish size={20} className="text-sky-500" />
             </button>
         </div>
 
@@ -205,7 +206,7 @@ export default function CyberCat() {
         </div>
       </div>
 
-      {/* ⌨️ 互动输入框 */}
+      {/* ⌨互动输入框 */}
       <AnimatePresence>
         {showInput && (
           <motion.form

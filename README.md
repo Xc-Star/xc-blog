@@ -35,7 +35,7 @@ xhblogs-stack/
 ```bash
 cd xhblogs-stack
 cp .env.example .env
-# ⚠️ 打开 .env，把所有 change-me-* 改成你自己的强随机值
+# 打开 .env，把所有 change-me-* 改成你自己的强随机值
 docker compose up -d --build
 ```
 
@@ -62,12 +62,12 @@ openssl rand -hex 32
 
 | 变量 | 必填 | 说明 |
 |---|---|---|
-| `MYSQL_ROOT_PASSWORD` | ✅ | MySQL root 密码 |
+| `MYSQL_ROOT_PASSWORD` | 是 | MySQL root 密码 |
 | `MYSQL_DATABASE` | | 数据库名，默认 `xhblogs` |
-| `MYSQL_USER` / `MYSQL_PASSWORD` | ✅ | 应用连接数据库用的账号 |
-| `ADMIN_PASSWORD` | ✅ | 管理端登录密码；首次启动时写入 `admin_users` 表 |
-| `SESSION_SECRET` | ✅ | 管理端会话 Cookie 的 HMAC 签名密钥 |
-| `CMS_TOKEN` | ✅ | 管理端调用后端 API 的内部令牌 |
+| `MYSQL_USER` / `MYSQL_PASSWORD` | 是 | 应用连接数据库用的账号 |
+| `ADMIN_PASSWORD` | 是 | 管理端登录密码；首次启动时写入 `admin_users` 表 |
+| `SESSION_SECRET` | 是 | 管理端会话 Cookie 的 HMAC 签名密钥 |
+| `CMS_TOKEN` | 是 | 管理端调用后端 API 的内部令牌 |
 | `COOKIE_SECURE` | | 会话 Cookie 是否加 `Secure`。纯 HTTP 访问保持 `false`；挂了 HTTPS 反代后改 `true` |
 | `BLOG_PORT` / `MANAGER_PORT` | | 对外端口，默认 3000 / 3001 |
 | `TZ` | | 时区，默认 `Asia/Shanghai` |
@@ -147,7 +147,7 @@ docker compose logs -f blog          # 看某个服务的日志
 docker compose restart manager       # 重启单个服务
 docker compose up -d --build blog    # 改了代码后重新构建某个服务
 docker compose down                  # 停止（保留数据）
-docker compose down -v               # 停止并删除数据卷（⚠️ 清空数据库）
+docker compose down -v               # 停止并删除数据卷（注意：会清空数据库）
 ```
 
 ### 备份与恢复

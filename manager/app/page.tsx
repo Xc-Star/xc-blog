@@ -75,7 +75,7 @@ export default async function Home() {
                     <ProfileCard postCount={allPosts.length} chatterCount={chatterCount} photoCount={realPhotoCount}/>
                 </div>
 
-                {/* 🌟 核心修改：去掉乱七八糟的 Link 和层级，直接渲染 CloudPlayer */}
+                {/* 核心修改：去掉乱七八糟的 Link 和层级，直接渲染 CloudPlayer */}
                 <div className="md:col-span-5 flex">
                     <CloudPlayer/>
                 </div>

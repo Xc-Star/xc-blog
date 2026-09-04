@@ -23,7 +23,7 @@ export default function ChatterBoard({ chatters: initialChatters }: { chatters: 
   const [activeTag, setActiveTag] = useState("全部");
   const { showToast } = useToast();
 
-  // 👇 控制自定义弹窗的状态
+  // 控制自定义弹窗的状态
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; slug: string | null; title: string | null }>({
     isOpen: false,
     slug: null,
@@ -46,7 +46,7 @@ export default function ChatterBoard({ chatters: initialChatters }: { chatters: 
     });
   }, [chatters, searchQuery, activeTag]);
 
-  // 🗑️ 真正的执行删除逻辑
+  // 真正的执行删除逻辑
 // ... 保持其他部分不变 ...
   const confirmDelete = async () => {
     if (!deleteModal.slug) return;
@@ -59,13 +59,13 @@ export default function ChatterBoard({ chatters: initialChatters }: { chatters: 
         body: JSON.stringify({ id: slug }) // 这里传的是 slug (即 md 的文件名)
       });
       if (data.success) {
-        showToast("🗑️ 物理文件已彻底销毁", "success");
+        showToast("物理文件已彻底销毁", "success");
         setChatters(prev => prev.filter(c => c.slug !== slug));
       } else {
-        showToast("❌ 销毁失败: " + data.message, "error");
+        showToast("销毁失败: " + data.message, "error");
       }
     } catch (err) {
-      showToast("❌ 无法连接到 Python 引擎", "error");
+      showToast("无法连接到 Python 引擎", "error");
     } finally {
       setDeleteModal({ isOpen: false, slug: null, title: null });
     }
@@ -76,7 +76,7 @@ export default function ChatterBoard({ chatters: initialChatters }: { chatters: 
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-10 py-10 pt-28 relative z-10">
 
       {/* ---------------------------------------------------------
-          💎 自定义绝美确认弹窗 (Custom Modal)
+          自定义绝美确认弹窗 (Custom Modal)
       --------------------------------------------------------- */}
       <AnimatePresence>
         {deleteModal.isOpen && (
@@ -197,7 +197,7 @@ export default function ChatterBoard({ chatters: initialChatters }: { chatters: 
                   <Pencil size={14} />
                 </Link>
                 <button
-                  // 👇 核心修改：点击不再直接 delete，而是打开自定义弹窗
+                  // 核心修改：点击不再直接 delete，而是打开自定义弹窗
                   onClick={(e) => {
                     e.preventDefault();
                     setDeleteModal({ isOpen: true, slug: chatter.slug, title: chatter.title || "无标题笔记" });

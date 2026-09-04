@@ -2,16 +2,16 @@
 
 import { useRouter } from 'next/navigation';
 import { siteConfig } from '../siteConfig';
-import { useToast } from './ToastProvider'; // 👈 引入我们写好的绝美提示钩子
+import { useToast } from './ToastProvider'; // 引入我们写好的绝美提示钩子
 
 export default function ProfileCard({ postCount, chatterCount, photoCount }: { postCount: number, chatterCount: number, photoCount: number }) {
   const router = useRouter();
-  const { showToast } = useToast(); // 👈 激活魔法
+  const { showToast } = useToast(); // 激活魔法
 
   const copyToClipboard = (text: string, label: string) => {
     navigator.clipboard.writeText(text);
-    // 👈 彻底消灭原生 alert，换成我们的高颜值 Toast！
-    showToast(`✨ ${label}已复制到剪贴板: ${text}`, 'success');
+    // 彻底消灭原生 alert，换成我们的高颜值 Toast！
+    showToast(`${label}已复制到剪贴板: ${text}`, 'success');
   };
 
   return (

@@ -14,7 +14,7 @@ export default function WeatherWidget() {
         const res = await fetch('/api/weather');
         const data = await res.json();
 
-        // 🌟 按照和风 V7 文档结构解析：数据在 data.now 中
+        // 按照和风 V7 文档结构解析：数据在 data.now 中
         if (data.code === "200" && data.now) {
           setWeather({
             city: "北京市",

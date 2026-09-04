@@ -25,7 +25,7 @@ export async function middleware(request: NextRequest) {
   const isCms = pathname === '/cms' || pathname.startsWith('/cms/');
 
   if (!process.env.ADMIN_PASSWORD) {
-    console.warn('⚠️ ADMIN_PASSWORD 未配置，管理控制台保持开放。');
+    console.warn('ADMIN_PASSWORD 未配置，管理控制台保持开放。');
     return isCms ? passThroughCms(request) : NextResponse.next();
   }
 

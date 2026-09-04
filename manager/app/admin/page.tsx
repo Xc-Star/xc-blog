@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Orbit, FileText, Images, Settings, Inbox, X, Rocket } from 'lucide-react';
 import { siteConfig } from '../../siteConfig'; // 确保路径正确，可能需要根据你的目录结构调整为 '../siteConfig'
 
 export default function AdminDashboard() {
@@ -20,10 +21,10 @@ export default function AdminDashboard() {
 
   // 左侧导航菜单配置
   const menuItems = [
-    { id: 'dashboard', name: '全息仪表盘', icon: '🌌' },
-    { id: 'posts', name: '文章与草稿', icon: '📝' },
-    { id: 'gallery', name: '光影画廊', icon: '🖼️' },
-    { id: 'settings', name: '系统核心配置', icon: '⚙️' },
+    { id: 'dashboard', name: '全息仪表盘', Icon: Orbit },
+    { id: 'posts', name: '文章与草稿', Icon: FileText },
+    { id: 'gallery', name: '光影画廊', Icon: Images },
+    { id: 'settings', name: '系统核心配置', Icon: Settings },
   ];
 
   return (
@@ -58,7 +59,7 @@ export default function AdminDashboard() {
                   : 'text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-800/50 hover:translate-x-1'}
               `}
             >
-              <span className="text-lg">{item.icon}</span>
+              <item.Icon size={18} className="shrink-0" />
               {item.name}
             </button>
           ))}
@@ -85,9 +86,10 @@ export default function AdminDashboard() {
             <div className="relative">
               <button
                 onClick={() => setIsOpBoxOpen(!isOpBoxOpen)}
-                className="w-12 h-12 rounded-xl bg-white/50 dark:bg-slate-800/50 flex items-center justify-center text-xl hover:bg-white dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-slate-700"
+                className="w-12 h-12 rounded-xl bg-white/50 dark:bg-slate-800/50 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-slate-700"
+                aria-label="待同步操作列表"
               >
-                📥
+                <Inbox size={20} />
               </button>
               {operations.length > 0 && (
                 <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center">
@@ -119,7 +121,7 @@ export default function AdminDashboard() {
                         {operations.map(op => (
                           <div key={op.id} className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-100 dark:border-slate-700/50 flex justify-between items-center group">
                             <span className="text-sm text-slate-700 dark:text-slate-200 truncate pr-2">{op.text}</span>
-                            <button className="text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+                            <button className="text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity" aria-label="移除"><X size={14} /></button>
                           </div>
                         ))}
                       </div>
@@ -131,7 +133,7 @@ export default function AdminDashboard() {
 
             {/* 一键部署按钮 */}
             <button className="h-12 px-6 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-black text-sm shadow-lg shadow-indigo-500/30 flex items-center gap-2 transition-all active:scale-95">
-              🚀 全部上传并部署
+              <Rocket size={16} /> 全部上传并部署
             </button>
           </div>
         </div>
@@ -141,7 +143,7 @@ export default function AdminDashboard() {
 
           {activeTab === 'dashboard' && (
             <div className="flex flex-col items-center justify-center h-full text-slate-500 dark:text-slate-400 gap-4 pt-20">
-              <span className="text-6xl">🌌</span>
+              <Orbit size={56} strokeWidth={1.25} className="opacity-60" />
               <p className="font-bold tracking-widest text-sm">系统运转良好，随时准备接收指令</p>
             </div>
           )}

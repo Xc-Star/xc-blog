@@ -2,6 +2,7 @@ import { cmsJson } from '@/lib/cmsApi';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '../ToastProvider';
+import { Image as ImageIcon, Radar, CircleCheck, CircleX } from 'lucide-react';
 
 export default function GallerySection({ formData, handleUpdate, saveConfig }: any) {
   const { showToast } = useToast();
@@ -9,7 +10,6 @@ export default function GallerySection({ formData, handleUpdate, saveConfig }: a
   const [testResult, setTestResult] = useState<{ success: boolean, msg: string } | null>(null);
 
   const handleTestConnection = async () => {
-    // 👈 彻底去掉写死逻辑，完全读取用户在界面输入的 URL 和 Token
     const url = formData.picBedUrl;
     const token = formData.picBedToken;
 
@@ -32,9 +32,9 @@ export default function GallerySection({ formData, handleUpdate, saveConfig }: a
       setTestResult({ success: data.success, msg: data.message });
 
       if (data.success) {
-        showToast("✅ 测试通过！图床已就绪", "success");
+        showToast("测试通过！图床已就绪", "success");
       } else {
-        showToast("❌ Token 无效或服务异常", "error");
+        showToast("Token 无效或服务异常", "error");
       }
     } catch (error) {
       showToast("无法连接到本地 Python 引擎", "error");
@@ -54,7 +54,7 @@ export default function GallerySection({ formData, handleUpdate, saveConfig }: a
 
   return (
     <motion.section initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xl border border-white/50 dark:border-slate-800/50 rounded-[40px] p-8 shadow-2xl">
-      <h2 className="text-xl font-black text-slate-800 dark:text-white mb-8">🖼️ 图床引擎设置</h2>
+      <h2 className="text-xl font-black text-slate-800 dark:text-white mb-8 flex items-center gap-2"><ImageIcon size={20} className="text-pink-500" /> 图床引擎设置</h2>
 
       <div className="max-w-xl space-y-6">
         <div>
@@ -67,7 +67,7 @@ export default function GallerySection({ formData, handleUpdate, saveConfig }: a
           />
         </div>
 
-        {/* 👈 新增：彻底解耦的 API 地址输入框 */}
+        {/* 彻底解耦的 API 地址输入框 */}
         <div>
           <label className="text-[10px] font-black text-slate-400 uppercase ml-1">API 接口地址 (URL)</label>
           <input
@@ -99,7 +99,7 @@ export default function GallerySection({ formData, handleUpdate, saveConfig }: a
           >
             {isTesting ? (
               <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-            ) : "📡 发送探针测试 Token"}
+            ) : <><Radar size={16} /> 发送探针测试 Token</>}
           </button>
 
           <button
@@ -119,7 +119,7 @@ export default function GallerySection({ formData, handleUpdate, saveConfig }: a
               className="overflow-hidden"
             >
               <div className={`p-4 rounded-2xl border flex items-center gap-3 ${testResult.success ? 'bg-green-500/10 border-green-500/30 text-green-600 dark:text-green-400' : 'bg-red-500/10 border-red-500/30 text-red-600 dark:text-red-400'}`}>
-                <span className="text-xl">{testResult.success ? '✅' : '❌'}</span>
+                {testResult.success ? <CircleCheck size={20} className="shrink-0" /> : <CircleX size={20} className="shrink-0" />}
                 <span className="text-sm font-bold leading-relaxed">{testResult.msg}</span>
               </div>
             </motion.div>

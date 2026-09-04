@@ -4,21 +4,21 @@ import { useState, useEffect } from 'react';
 import Navbar from '../../components/Navbar';
 import PageTransition from '../../components/PageTransition';
 import { motion, AnimatePresence } from 'framer-motion';
-import {Beaker, Rocket, Trees, Wrench} from 'lucide-react'; // 🌟 暂时移除了 Sofa 图标
-import { siteConfig } from '../../siteConfig'; // 🌟 引入站点配置
+import {Beaker, Rocket, Trees, Wrench} from 'lucide-react'; // 暂时移除了 Sofa 图标
+import { siteConfig } from '../../siteConfig'; // 引入站点配置
 
 import AlchemyLab from './AlchemyLab';
 import DijiangModel from './DijiangModel';
-// import OperatorRecreation from './OperatorRecreation'; // 🌟 先注释掉，以后需要随时可以加回来
+// import OperatorRecreation from './OperatorRecreation'; // 先注释掉，以后需要随时可以加回来
 
 export default function CreativeWorkshopClient({ posts = [], chatters = [], moments = [] }: any) {
-  const [currentMode, setCurrentMode] = useState<'alchemy' | 'model'>('alchemy'); // 🌟 暂时只保留两个状态
+  const [currentMode, setCurrentMode] = useState<'alchemy' | 'model'>('alchemy'); // 暂时只保留两个状态
 
   // =========================================================
-  // 🌟 [现实主义] 饱和渐近经验升级系统 (无限等级，难度封顶)
+  // [现实主义] 饱和渐近经验升级系统 (无限等级，难度封顶)
   // =========================================================
   useEffect(() => {
-    // 🌟 拦截开关：如果站长在配置中关闭了等级系统，则直接退出，不消耗任何性能！
+    // 拦截开关：如果站长在配置中关闭了等级系统，则直接退出，不消耗任何性能！
     if (!siteConfig.enableLevelSystem) return;
 
     try {
@@ -45,7 +45,7 @@ export default function CreativeWorkshopClient({ posts = [], chatters = [], mome
       // 3. 汇总总储备经验
       const totalExp = contentExp + checkInExp;
 
-      // 4. 🌟 饱和渐近线算法：前期合理递增，后期无限逼近 2150 EXP 封顶
+      // 4. 饱和渐近线算法：前期合理递增，后期无限逼近 2150 EXP 封顶
       const getExpNeededForLevel = (lvl: number) => {
         if (lvl <= 1) return 150;
         return 150 + Math.floor((2000 * (lvl - 1)) / ((lvl - 1) + 10));
@@ -66,7 +66,7 @@ export default function CreativeWorkshopClient({ posts = [], chatters = [], mome
       const progressPercent = ((remainingExp / expNeededForNextLevel) * 100).toFixed(1);
 
       // 5. 打印高度拟真化的控制台干员档案
-      console.groupCollapsed(`🛡️ [罗德岛数据终端] 干员 XingHuiSama 个人综合档案同步...`);
+      console.groupCollapsed(`[罗德岛数据终端] 干员 XingHuiSama 个人综合档案同步...`);
       console.log(`%c[当前等级] Lv.${level}`, 'color: #6366f1; font-weight: 900; font-size: 16px; text-shadow: 0 0 4px rgba(99,102,241,0.3);');
       console.log(`%c[升级进度] ${remainingExp} / ${expNeededForNextLevel} EXP (${progressPercent}%)`, 'color: #10b981; font-weight: bold;');
       console.log(`[总计累计] ${totalExp} EXP`);
@@ -116,7 +116,7 @@ export default function CreativeWorkshopClient({ posts = [], chatters = [], mome
                 <Rocket size={16} /> 帝江号舰船
               </button>
 
-              {/* 🌟 第三选项干员休息处暂时隐藏 */}
+              {/* 第三选项干员休息处暂时隐藏 */}
 
               {/* 滑动背景块动画：自动平分两等份 */}
               <motion.div
@@ -124,8 +124,8 @@ export default function CreativeWorkshopClient({ posts = [], chatters = [], mome
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 className="absolute top-1.5 bottom-1.5 bg-white dark:bg-slate-700 rounded-full z-0 shadow-sm border border-slate-100 dark:border-slate-600"
                 style={{
-                  width: 'calc(50% - 6px)', // 🌟 改为平分两份宽度
-                  left: currentMode === 'alchemy' ? '6px' : 'calc(50% + 2px)' // 🌟 对应两种状态的计算位置
+                  width: 'calc(50% - 6px)', // 改为平分两份宽度
+                  left: currentMode === 'alchemy' ? '6px' : 'calc(50% + 2px)' // 对应两种状态的计算位置
                 }}
               />
             </div>
@@ -139,7 +139,7 @@ export default function CreativeWorkshopClient({ posts = [], chatters = [], mome
             {currentMode === 'model' && (
               <DijiangModel key="model-view" posts={posts} chatters={chatters} moments={moments} />
             )}
-            {/* 🌟 第三种展示暂时隐藏 */}
+            {/* 第三种展示暂时隐藏 */}
           </AnimatePresence>
 
         </div>

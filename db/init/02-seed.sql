@@ -77,13 +77,13 @@ INSERT INTO pages (slug, title, cover, content) VALUES ('about', '关于我', 'h
 
 专注于**计算化学、人工智能与软件工程**的交叉应用。
 
-**🔬 研究与计算方向**
+**研究与计算方向**
 
 * **图神经网络:** 用于分子性质预测与特征提取。
 * **分子对接:** 用于评估配体与受体蛋白的结合模式与亲和力。
 * **分子动力学模拟 :** 用于探究生物大分子在原子尺度的动态行为与构象变化。
 
-**💻 软件工程能力**
+**软件工程能力**
 
 * **后端开发:** 使用 **Spring Boot** 框架构建服务端架构，能够处理复杂的数据逻辑与计算任务调度。
 * **前端开发:** 熟练掌握 **Vue.js** 与 **React** 框架，为复杂科学数据的可视化与交互提供流畅的体验。
@@ -98,4 +98,4 @@ INSERT INTO albums (id, title, description, cover, album_date, photos, sort_orde
 INSERT INTO friends (id, name, url, description, avatar, theme_color, sort_order) VALUES ('amiya', '罗德岛 PRTS', 'https://prts.wiki/', '记录泰拉大陆的各项数据与前文明遗迹，愿源石的阴霾早日散去。', 'https://bu.dusays.com/2026/03/24/69c1e38b4c370.jpg', 'rgba(16, 185, 129, 0.5)', 0) ON DUPLICATE KEY UPDATE name = VALUES(name);
 
 -- 项目矩阵
-INSERT INTO projects (id, name, description, icon, github_url, tags, sort_order) VALUES ('proj_1775049332705', 'Computational Chemistry Tool', '该工具本作者使用在Win下的WSL2平台，系统为Ubuntu22，个人使用请依据自己数据进行修改（这些工具只是整合了一些流程）', '🚀', 'https://github.com/heiehiehi/Computational_Chemistry_Tool', '["Gromacs","RMSF"]', 0) ON DUPLICATE KEY UPDATE name = VALUES(name);
+INSERT INTO projects (id, name, description, icon, github_url, tags, sort_order) VALUES ('proj_1775049332705', 'Computational Chemistry Tool', '该工具本作者使用在Win下的WSL2平台，系统为Ubuntu22，个人使用请依据自己数据进行修改（这些工具只是整合了一些流程）', 'rocket', 'https://github.com/heiehiehi/Computational_Chemistry_Tool', '["Gromacs","RMSF"]', 0) ON DUPLICATE KEY UPDATE name = VALUES(name);

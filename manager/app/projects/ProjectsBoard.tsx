@@ -1,12 +1,13 @@
 "use client";
 
 import { cmsJson } from '@/lib/cmsApi';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BackButton from '../../components/BackButton';
 import { projectsData as initialProjects, Project } from '../../data/projects';
-import { Plus, Pencil, Trash2, AlertTriangle, Save, Edit3, X, Sparkles, Code2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, AlertTriangle, Save, Edit3, X, Sparkles, Code2, ChevronDown } from 'lucide-react';
 import { useToast } from '../../components/ToastProvider';
+import ProjectIcon, { PROJECT_ICON_OPTIONS, DEFAULT_PROJECT_ICON, resolveProjectIconKey } from '../../components/ProjectIcon';
 
 export default function ProjectsBoard() {
   const { showToast } = useToast();
@@ -28,6 +29,19 @@ export default function ProjectsBoard() {
   // 2. 弹窗状态
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; id: string | null; name: string | null }>({ isOpen: false, id: null, name: null });
   const [projectModal, setProjectModal] = useState<{ isOpen: boolean; mode: 'add' | 'edit'; data: Partial<Project> }>({ isOpen: false, mode: 'add', data: {} });
+  const [iconPickerOpen, setIconPickerOpen] = useState(false);
+  const iconPickerRef = useRef<HTMLDivElement>(null);
+  const activeIconKey = resolveProjectIconKey(projectModal.data.icon);
+  const activeIconLabel = PROJECT_ICON_OPTIONS.find(o => o.key === activeIconKey)?.label ?? '';
+
+  useEffect(() => {
+    if (!iconPickerOpen) return;
+    const onPointerDown = (event: MouseEvent) => {
+      if (!iconPickerRef.current?.contains(event.target as Node)) setIconPickerOpen(false);
+    };
+    document.addEventListener('mousedown', onPointerDown);
+    return () => document.removeEventListener('mousedown', onPointerDown);
+  }, [iconPickerOpen]);
 
   // 3. 搜索过滤逻辑
   const filteredProjects = useMemo(() => {
@@ -47,9 +61,9 @@ export default function ProjectsBoard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ projects: nextList })
       });
-      showToast(data.success ? "✅ 项目已保存，前台已生效" : `❌ 保存失败：${data.message}`, data.success ? "success" : "error");
+      showToast(data.success ? "项目已保存，前台已生效" : `保存失败：${data.message}`, data.success ? "success" : "error");
     } catch (error: any) {
-      showToast(`❌ 保存失败：${error.message}`, "error");
+      showToast(`保存失败：${error.message}`, "error");
     }
   };
 
@@ -67,12 +81,12 @@ export default function ProjectsBoard() {
         name: data.name!,
         githubUrl: data.githubUrl!,
         description: data.description || '暂无描述。',
-        icon: data.icon || '🚀',
+        icon: resolveProjectIconKey(data.icon),
         tags: data.tags || ['OpenSource']
       };
       next = [newProj, ...editableProjects];
     } else {
-      next = editableProjects.map(p => p.id === data.id ? { ...p, ...data } as Project : p);
+      next = editableProjects.map(p => p.id === data.id ? { ...p, ...data, icon: resolveProjectIconKey(data.icon) } as Project : p);
     }
     setEditableProjects(next);
     syncToQueue(next);
@@ -97,7 +111,7 @@ export default function ProjectsBoard() {
   return (
     <div className="w-full max-w-6xl mx-auto px-4 sm:px-10 py-10 relative z-10">
 
-      {/* 💎 销毁确认弹窗 */}
+      {/* 销毁确认弹窗 */}
       <AnimatePresence>
         {deleteModal.isOpen && (
           <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
@@ -115,7 +129,7 @@ export default function ProjectsBoard() {
         )}
       </AnimatePresence>
 
-      {/* 💎 项目编辑弹窗 */}
+      {/* 项目编辑弹窗 */}
       <AnimatePresence>
         {projectModal.isOpen && (
           <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
@@ -124,8 +138,44 @@ export default function ProjectsBoard() {
                <h2 className="text-2xl font-black mb-6 dark:text-white flex items-center gap-2"><Code2 className="text-indigo-500" /> {projectModal.mode === 'add' ? '开启新项目' : '修改项目档案'}</h2>
                <div className="space-y-4">
                  <div className="flex gap-4">
-                    <input type="text" value={projectModal.data.icon || ''} onChange={e => setProjectModal({...projectModal, data: {...projectModal.data, icon: e.target.value}})} className="w-20 bg-slate-100 dark:bg-black/20 rounded-2xl px-5 py-3 text-center text-2xl border-none outline-none focus:ring-2 focus:ring-indigo-500" placeholder="图标" />
-                    <input type="text" value={projectModal.data.name || ''} onChange={e => setProjectModal({...projectModal, data: {...projectModal.data, name: e.target.value}})} className="flex-1 bg-slate-100 dark:bg-black/20 rounded-2xl px-5 py-3 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 border-none" placeholder="项目名称" />
+                    <div ref={iconPickerRef} className="relative w-44 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => setIconPickerOpen(open => !open)}
+                        className="w-full flex items-center gap-2 bg-slate-100 dark:bg-black/20 rounded-2xl px-4 py-3 text-left transition hover:ring-2 hover:ring-indigo-500/40"
+                      >
+                        <ProjectIcon name={activeIconKey} size={22} className="text-indigo-500 shrink-0" />
+                        <span className="flex-1 min-w-0 truncate text-xs font-bold text-slate-700 dark:text-slate-200">{activeIconLabel}</span>
+                        <ChevronDown size={14} className={`text-slate-400 shrink-0 transition-transform ${iconPickerOpen ? 'rotate-180' : ''}`} />
+                      </button>
+                      <AnimatePresence>
+                        {iconPickerOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -6 }}
+                            className="absolute left-0 top-full mt-2 z-50 w-60 max-h-56 overflow-y-auto grid grid-cols-5 gap-1 p-2 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xl"
+                          >
+                            {PROJECT_ICON_OPTIONS.map(({ key, label, Icon }) => (
+                              <button
+                                key={key}
+                                type="button"
+                                title={label}
+                                aria-label={label}
+                                onClick={() => {
+                                  setProjectModal(modal => ({ ...modal, data: { ...modal.data, icon: key } }));
+                                  setIconPickerOpen(false);
+                                }}
+                                className={`aspect-square rounded-xl flex items-center justify-center transition ${key === activeIconKey ? 'bg-indigo-500 text-white' : 'text-slate-500 dark:text-slate-400 hover:bg-indigo-500/10 hover:text-indigo-500'}`}
+                              >
+                                <Icon size={18} strokeWidth={1.75} />
+                              </button>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                    <input type="text" value={projectModal.data.name || ''} onChange={e => setProjectModal({...projectModal, data: {...projectModal.data, name: e.target.value}})} className="flex-1 min-w-0 bg-slate-100 dark:bg-black/20 rounded-2xl px-5 py-3 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 border-none" placeholder="项目名称" />
                  </div>
                  <input type="text" value={projectModal.data.githubUrl || ''} onChange={e => setProjectModal({...projectModal, data: {...projectModal.data, githubUrl: e.target.value}})} className="w-full bg-slate-100 dark:bg-black/20 rounded-2xl px-5 py-3 dark:text-white outline-none focus:ring-2 focus:ring-indigo-500 border-none" placeholder="GitHub URL" />
                  <textarea value={projectModal.data.description || ''} onChange={e => setProjectModal({...projectModal, data: {...projectModal.data, description: e.target.value}})} className="w-full bg-slate-100 dark:bg-black/20 rounded-2xl px-5 py-3 dark:text-white h-24 outline-none resize-none focus:ring-2 focus:ring-indigo-500 border-none" placeholder="项目描述..." />
@@ -161,8 +211,8 @@ export default function ProjectsBoard() {
 
       <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
 
-        {/* 👇 新建项目虚线矩阵 */}
-        <motion.div layout onClick={() => setProjectModal({ isOpen: true, mode: 'add', data: { icon: '🚀', tags: [] } })} className="group cursor-pointer flex flex-col items-center justify-center min-h-[320px] rounded-[40px] border-4 border-dashed border-slate-300 dark:border-slate-700 bg-white/10 hover:border-indigo-500 hover:bg-indigo-500/5 transition-all duration-500">
+        {/* 新建项目虚线矩阵 */}
+        <motion.div layout onClick={() => { setIconPickerOpen(false); setProjectModal({ isOpen: true, mode: 'add', data: { icon: DEFAULT_PROJECT_ICON, tags: [] } }); }} className="group cursor-pointer flex flex-col items-center justify-center min-h-[320px] rounded-[40px] border-4 border-dashed border-slate-300 dark:border-slate-700 bg-white/10 hover:border-indigo-500 hover:bg-indigo-500/5 transition-all duration-500">
             <div className="w-16 h-16 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-indigo-500 group-hover:text-white transition-all shadow-md group-hover:rotate-90">
               <Plus size={40} />
             </div>
@@ -173,9 +223,9 @@ export default function ProjectsBoard() {
           {filteredProjects.map((project) => (
             <motion.div layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} key={project.id} className="h-full relative group">
 
-              {/* 👇 悬浮管理按钮 */}
+              {/* 悬浮管理按钮 */}
               <div className="absolute top-8 right-8 z-30 flex gap-2 opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0">
-                  <button onClick={(e) => { e.preventDefault(); setProjectModal({ isOpen: true, mode: 'edit', data: project }); }} className="w-9 h-9 rounded-xl bg-indigo-500 text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform"><Edit3 size={16}/></button>
+                  <button onClick={(e) => { e.preventDefault(); setIconPickerOpen(false); setProjectModal({ isOpen: true, mode: 'edit', data: project }); }} className="w-9 h-9 rounded-xl bg-indigo-500 text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform"><Edit3 size={16}/></button>
                   <button onClick={(e) => { e.preventDefault(); setDeleteModal({ isOpen: true, id: project.id, name: project.name }); }} className="w-9 h-9 rounded-xl bg-red-500 text-white flex items-center justify-center shadow-lg hover:scale-110 transition-transform"><Trash2 size={16}/></button>
               </div>
 
@@ -184,7 +234,7 @@ export default function ProjectsBoard() {
 
                 <div className="flex items-start justify-between mb-8 relative z-10">
                   <div className="flex items-center gap-5">
-                    <span className="text-5xl group-hover:scale-110 transition-transform duration-500">{project.icon}</span>
+                    <ProjectIcon name={project.icon} size={44} className="text-indigo-500 group-hover:scale-110 transition-transform duration-500" />
                     <h2 className="text-3xl font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{project.name}</h2>
                   </div>
                   <GithubIcon />

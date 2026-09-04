@@ -60,7 +60,7 @@ async function verifyWithBackend(password: string): Promise<{ reachable: boolean
       message: typeof data.message === 'string' ? data.message : '密码不对哦，请再试一次。',
     };
   } catch (error) {
-    console.warn('⚠️ 后端登录校验不可达，准备尝试 ADMIN_PASSWORD 降级分支：', error);
+    console.warn('后端登录校验不可达，准备尝试 ADMIN_PASSWORD 降级分支：', error);
     return { reachable: false, success: false, message: '认证服务暂时不可达' };
   }
 }
@@ -74,7 +74,7 @@ async function verifyWithFallback(password: string): Promise<boolean> {
 
 async function issueSession(request: Request) {
   const session = await createSessionToken();
-  const response = NextResponse.json({ success: true, message: '✅ 登录成功，欢迎回来！' });
+  const response = NextResponse.json({ success: true, message: '登录成功，欢迎回来！' });
   response.cookies.set('xh_admin', session.value, {
     httpOnly: true,
     sameSite: 'lax',
@@ -101,7 +101,7 @@ export async function POST(request: Request) {
   }
 
   if (!backend.reachable && process.env.ADMIN_PASSWORD) {
-    console.warn('⚠️ 正在使用 ADMIN_PASSWORD 本地降级校验，请尽快恢复后端认证服务。');
+    console.warn('正在使用 ADMIN_PASSWORD 本地降级校验，请尽快恢复后端认证服务。');
     if (await verifyWithFallback(password)) {
       clearFailures(request);
       return issueSession(request);

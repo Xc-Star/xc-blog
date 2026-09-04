@@ -11,13 +11,13 @@ export default function WeatherWidget() {
   useEffect(() => {
     const fetchQWeather = async () => {
       try {
-        // 🌟 1. 从环境变量获取你的 Key
+        // 1. 从环境变量获取你的 Key
         const apiKey = process.env.NEXT_PUBLIC_QWEATHER_KEY;
         if (!apiKey) {
           throw new Error("API Key 缺失");
         }
 
-        // 🌟 2. 和风天气：直接请求北京市 (LocationID: 101010100) 的实况天气
+        // 2. 和风天气：直接请求北京市 (LocationID: 101010100) 的实况天气
         // 如果想定位其他城市，可以去他们官网查 LocationID，或者传经纬度 (如 location=116.4,39.9)
         const locationId = "101010100";
 
@@ -58,7 +58,7 @@ export default function WeatherWidget() {
     fetchQWeather();
   }, []);
 
-  // 🌟 3. 将和风天气的 Icon 代码映射到我们炫酷的 Lucide 图标上
+  // 3. 将和风天气的 Icon 代码映射到我们炫酷的 Lucide 图标上
   const getWeatherIcon = (iconCode: string) => {
     const code = parseInt(iconCode, 10);
     // 晴天系 (100, 103, 104 等)

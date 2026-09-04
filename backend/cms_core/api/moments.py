@@ -46,7 +46,7 @@ def save_moment(payload: MomentPayload):
             published_at=to_mysql_datetime(payload.date),
         )
         print(f"\n[成功] 说说已写入数据库：{moment_id}\n")
-        return {"success": True, "message": f"✅ 说说已保存：{moment_id}"}
+        return {"success": True, "message": f"说说已保存：{moment_id}"}
     except Exception as e:
         print(f"\n[报错] 写入失败：{str(e)}\n")
         return {"success": False, "message": f"写入数据库失败: {str(e)}"}

@@ -2,14 +2,14 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-// 🌟 引入了新的图标 Camera, Users, Sprout
-import { ChevronLeft, ChevronRight, BookOpen, ScrollText, Coffee, FileText, Sparkles, Award, Shield, X, Grid, LockKeyhole, Camera, Users, Sprout } from 'lucide-react';
+// 引入了新的图标 Camera, Users, Sprout
+import { ChevronLeft, ChevronRight, BookOpen, ScrollText, Coffee, FileText, Sparkles, Award, Shield, X, Grid, LockKeyhole, Camera, Users, Sprout, StickyNote, BookText, Notebook } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-// 🌟 引入站点配置
+// 引入站点配置
 import { siteConfig } from '../../siteConfig';
 
-// 🌟 引入相册与友链数据以统计徽章 (请确保路径正确，如果报错请调整 ../ 的数量)
+// 引入相册与友链数据以统计徽章 (请确保路径正确，如果报错请调整 ../ 的数量)
 import { albums } from '../../data/albums';
 import { friendsData } from '../../data/friends';
 
@@ -19,7 +19,7 @@ function seededRandom(seed: number) {
 }
 
 // ==========================================
-// 🌟 0. 炼金六边形徽章组件 (HexBadge) 满血特效版
+// 0. 炼金六边形徽章组件 (HexBadge) 满血特效版
 // ==========================================
 const HexBadge = ({ badge, locked = false }: any) => {
   // 1~10阶 材质与动画特效
@@ -62,7 +62,7 @@ const HexBadge = ({ badge, locked = false }: any) => {
 };
 
 // ==========================================
-// 🌟 1. 魔法信息卡片组件
+// 1. 魔法信息卡片组件
 // ==========================================
 const MagicTooltip = ({ title, type, content, author, color }: any) => (
   <motion.div
@@ -75,7 +75,7 @@ const MagicTooltip = ({ title, type, content, author, color }: any) => (
 
       {type === 'moment' ? (
         <>
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-2" style={{ color }}>— 📗 瞬间思绪 —</p>
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 flex items-center gap-1.5" style={{ color }}>— <StickyNote size={12} /> 瞬间思绪 —</p>
           <p className="text-sm text-[#e8e4d9] font-serif italic text-center leading-relaxed line-clamp-4">
             「 {content || title} 」
           </p>
@@ -83,8 +83,8 @@ const MagicTooltip = ({ title, type, content, author, color }: any) => (
         </>
       ) : (
         <>
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-2" style={{ color }}>
-            — {type === 'post' ? '📘 深度文章' : '📙 杂谈随笔'} —
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 flex items-center gap-1.5" style={{ color }}>
+            — {type === 'post' ? <><BookText size={12} /> 深度文章</> : <><Notebook size={12} /> 杂谈随笔</>} —
           </p>
           <p className="text-sm font-bold text-[#e8e4d9] text-center" style={{ fontFamily: 'serif' }}>{title}</p>
           <p className="text-[10px] text-[#8b6b4a] mt-2 font-mono tracking-widest">CLICK TO READ</p>
@@ -95,7 +95,7 @@ const MagicTooltip = ({ title, type, content, author, color }: any) => (
 );
 
 // ==========================================
-// 🌟 2. 交互式玻璃药水瓶
+// 2. 交互式玻璃药水瓶
 // ==========================================
 const LiquidFlask = ({ item, router }: { item: any; router: any }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -150,7 +150,7 @@ const LiquidFlask = ({ item, router }: { item: any; router: any }) => {
 };
 
 // ==========================================
-// 🌟 3. 核心实验室组件 (完全体)
+// 3. 核心实验室组件 (完全体)
 // ==========================================
 export default function AlchemyLab({ posts = [], chatters = [], moments = [] }: any) {
   const router = useRouter();
@@ -161,7 +161,7 @@ export default function AlchemyLab({ posts = [], chatters = [], moments = [] }: 
   const [showCatalog, setShowCatalog] = useState(false);
 
   // =========================================================
-  // 🌟 终极 RPG 经验结算与全图鉴徽章生成系统 (兼容照片与友链)
+  // 终极 RPG 经验结算与全图鉴徽章生成系统 (兼容照片与友链)
   // =========================================================
   const rpgStats = useMemo(() => {
     if (siteConfig?.enableLevelSystem !== true) return null;
@@ -228,7 +228,7 @@ export default function AlchemyLab({ posts = [], chatters = [], moments = [] }: 
     const progressPercent = ((remainingExp / expNeededForNextLevel) * 100).toFixed(1);
 
     // ==========================================
-    // 🛡️ 全图鉴生成器 (显式配置，精准控制)
+    // 全图鉴生成器 (显式配置，精准控制)
     // ==========================================
     const allCatalogBadges: any[] = [];
     const ownedIds = new Set();
@@ -372,7 +372,7 @@ export default function AlchemyLab({ posts = [], chatters = [], moments = [] }: 
       `}} />
 
       {/* ========================================== */}
-      {/* 🌟 魔法资质档案板与荣耀徽章墙 */}
+      {/* 魔法资质档案板与荣耀徽章墙 */}
       {/* ========================================== */}
       {rpgStats && (
         <div className="w-full max-w-5xl mb-8 px-4 z-40 flex flex-col gap-4 relative">
@@ -444,7 +444,7 @@ export default function AlchemyLab({ posts = [], chatters = [], moments = [] }: 
             </div>
           </div>
 
-          {/* 下半部：荣誉徽章墙 (🌟 修复层级，确保被 Tooltip 盖住) */}
+          {/* 下半部：荣誉徽章墙 (修复层级，确保被 Tooltip 盖住) */}
           <div className="bg-[#231a16]/80 backdrop-blur-md px-6 py-5 rounded-3xl border border-[#8b6b4a]/40 shadow-[0_5px_20px_rgba(0,0,0,0.5)] relative z-10">
             <div className="flex justify-between items-center mb-4 border-b border-[#8b6b4a]/30 pb-2">
               <h3 className="text-[#d4af37] font-black tracking-widest text-sm uppercase flex items-center gap-2">
@@ -464,7 +464,7 @@ export default function AlchemyLab({ posts = [], chatters = [], moments = [] }: 
           </div>
 
           {/* ========================================== */}
-          {/* 🌟 全图鉴 Modal 面板 (含照片与友链扩展区) */}
+          {/* 全图鉴 Modal 面板 (含照片与友链扩展区) */}
           {/* ========================================== */}
           <AnimatePresence>
             {showCatalog && (
@@ -525,7 +525,7 @@ export default function AlchemyLab({ posts = [], chatters = [], moments = [] }: 
                       ))}
                     </div>
 
-                    {/* 🌟 新增：光影回忆徽章区 */}
+                    {/* 新增：光影回忆徽章区 */}
                     <div className="flex items-center gap-4 mt-16 mb-8">
                       <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[#8b6b4a]/50 to-transparent" />
                       <span className="text-[#8b6b4a] text-xs font-black tracking-widest uppercase flex items-center gap-2"><Camera size={14} /> 光影回忆徽章 (满破 100张)</span>
@@ -537,7 +537,7 @@ export default function AlchemyLab({ posts = [], chatters = [], moments = [] }: 
                       ))}
                     </div>
 
-                    {/* 🌟 新增：羁绊结弦徽章区 */}
+                    {/* 新增：羁绊结弦徽章区 */}
                     <div className="flex items-center gap-4 mt-16 mb-8">
                       <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[#8b6b4a]/50 to-transparent" />
                       <span className="text-[#8b6b4a] text-xs font-black tracking-widest uppercase flex items-center gap-2"><Users size={14} /> 羁绊结弦徽章 (满破 50人)</span>

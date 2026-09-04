@@ -76,7 +76,7 @@ async function proxy(request: NextRequest, context: { params: Promise<{ path?: s
   } catch (error) {
     console.error('[cms-proxy] 后端不可达：', target, error);
     return NextResponse.json(
-      { success: false, message: '❌ 无法连接到 CMS 后端服务，请检查该容器是否正常运行。' },
+      { success: false, message: '无法连接到 CMS 后端服务，请检查该容器是否正常运行。' },
       { status: 502 },
     );
   }

@@ -81,11 +81,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                   style={{
                     background: `linear-gradient(-45deg, ${siteConfig.themeColors.join(', ')})`,
                     backgroundSize: '400% 400%',
-                    animation: 'gradientMove 15s ease infinite' // 🌟 全端保留渐变流动
+                    animation: 'gradientMove 15s ease infinite' // 全端保留渐变流动
                   }}
                 ></div>
 
-                {/* 👇 🌟 优化：手机端去掉了 mix-blend-overlay，但保留了 blur 模糊光晕，确保视觉不打折 */}
+                {/* 优化：手机端去掉了 mix-blend-overlay，但保留了 blur 模糊光晕，确保视觉不打折 */}
                 <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-white/40 dark:bg-indigo-900/20 blur-[100px] rounded-full z-[-7] md:mix-blend-overlay"></div>
                 <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-400/30 dark:bg-purple-900/30 blur-[100px] rounded-full z-[-7] md:mix-blend-overlay"></div>
 

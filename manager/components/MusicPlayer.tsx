@@ -185,7 +185,7 @@ export default function MusicPage() {
                 {activeTab === 'lyrics' && (
                   <div className="absolute inset-0 flex flex-col h-full animate-in fade-in duration-300">
 
-                    {/* 🌟 核心修复 1：使用 CSS Mask 替代颜色遮罩，彻底杜绝割裂线 */}
+                    {/* 核心修复 1：使用 CSS Mask 替代颜色遮罩，彻底杜绝割裂线 */}
                     <div
                       ref={lyricContainerRef}
                       className="h-full overflow-y-auto no-scrollbar scroll-smooth relative px-6 lyric-mask-container"
@@ -199,7 +199,7 @@ export default function MusicPage() {
                                     className={`transition-all duration-700 cursor-pointer px-4 rounded-2xl ${isActive ? 'opacity-100 scale-105 py-2 bg-white/10' : 'opacity-20 hover:opacity-40'}`}
                                     onClick={() => duration > 0 && handleSeek({ target: { value: String((line.time / duration) * 100) } } as any)}
                                   >
-                                    {/* 🌟 核心修复 2：字体字号缩小，显得更精致 */}
+                                    {/* 核心修复 2：字体字号缩小，显得更精致 */}
                                     <p className={`font-black tracking-tight leading-relaxed transition-all duration-700 ${
                                       isActive 
                                       ? 'text-lg md:text-xl text-indigo-600 dark:text-indigo-400' 
@@ -266,7 +266,7 @@ export default function MusicPage() {
         </div>
       </PageTransition>
 
-      {/* 🌟 注入关键 CSS：通过 mask-image 实现上下边缘的真正虚化，彻底干掉割裂线 */}
+      {/* 注入关键 CSS：通过 mask-image 实现上下边缘的真正虚化，彻底干掉割裂线 */}
       <style jsx global>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .no-scrollbar::-webkit-scrollbar { display: none; }

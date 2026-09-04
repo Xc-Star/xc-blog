@@ -1,9 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { Music2, Disc3, X } from 'lucide-react';
 
 export default function MusicSection({ formData, handleUpdate, saveConfig, musicDetails, queryMusic, queryLoading, queryResult, confirmAddMusic, removeSong }: any) {
   return (
     <motion.section initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xl border border-white/50 dark:border-slate-800/50 rounded-[40px] p-8 shadow-2xl">
-      <h2 className="text-xl font-black text-slate-800 dark:text-white mb-8">🎵 歌单管理与查询</h2>
+      <h2 className="text-xl font-black text-slate-800 dark:text-white mb-8 flex items-center gap-2"><Music2 size={20} className="text-pink-500" /> 歌单管理与查询</h2>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         <div className="space-y-3">
           <p className="text-[10px] font-black text-slate-400 uppercase ml-1 mb-4">当前绑定的网易云 ID ({formData.cloudMusicIds.length})</p>
@@ -16,7 +17,7 @@ export default function MusicSection({ formData, handleUpdate, saveConfig, music
                     {detail?.cover ? (
                       <img src={detail.cover} alt="cover" className="w-10 h-10 rounded-lg object-cover shadow-sm" />
                     ) : (
-                      <div className="w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-700 animate-pulse flex items-center justify-center text-xs">💿</div>
+                      <div className="w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-700 animate-pulse flex items-center justify-center text-slate-400"><Disc3 size={16} /></div>
                     )}
                     <div className="flex flex-col">
                       {detail ? (
@@ -30,7 +31,7 @@ export default function MusicSection({ formData, handleUpdate, saveConfig, music
                       <span className="text-[10px] font-mono text-pink-500 mt-0.5">#{id}</span>
                     </div>
                   </div>
-                  <button onClick={() => removeSong(index)} className="w-8 h-8 shrink-0 rounded-lg bg-red-500/10 text-red-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white flex items-center justify-center">✕</button>
+                  <button onClick={() => removeSong(index)} aria-label="移除歌曲" className="w-8 h-8 shrink-0 rounded-lg bg-red-500/10 text-red-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white flex items-center justify-center"><X size={16} /></button>
                 </div>
               );
             })}

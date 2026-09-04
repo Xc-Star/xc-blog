@@ -16,7 +16,7 @@ async def sync_friends(request: Request):
             conn.execute(text("DELETE FROM friends"))
             for idx, friend in enumerate(friends_list):
                 conn.execute(text("""INSERT INTO friends (id, name, url, description, avatar, theme_color, sort_order) VALUES (:id, :name, :url, :description, :avatar, :theme_color, :sort_order)"""), {"id": safe_slug(str(friend.get("id") or f"friend_{idx}")), "name": friend.get("name", ""), "url": friend.get("url", ""), "description": friend.get("description", ""), "avatar": friend.get("avatar", ""), "theme_color": friend.get("themeColor", ""), "sort_order": idx})
-        return {"success": True, "message": f"✨ 友链物理文件已更新！共同步 {len(friends_list)} 位好友。"}
+        return {"success": True, "message": f"友链物理文件已更新！共同步 {len(friends_list)} 位好友。"}
     except Exception as e:
         return {"success": False, "message": f"后端同步崩溃: {str(e)}"}
 

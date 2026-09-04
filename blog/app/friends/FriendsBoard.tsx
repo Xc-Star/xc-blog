@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Sparkles } from 'lucide-react';
 import BackButton from '../../components/BackButton';
 import { friendsData } from '../../data/friends';
-import { siteConfig } from '../../siteConfig'; // 🌟 引入刚刚更新的全局配置文件
+import { siteConfig } from '../../siteConfig'; // 引入刚刚更新的全局配置文件
 
 // Framer Motion 动画变体：交错子元素
 const containerVariants = {
@@ -21,10 +22,10 @@ const itemVariants = {
 };
 
 export default function FriendsBoard() {
-  // 🌟 控制复制按钮的状态
+  // 控制复制按钮的状态
   const [isCopied, setIsCopied] = useState(false);
 
-  // 🌟 直接从 siteConfig 读取申请格式
+  // 直接从 siteConfig 读取申请格式
   const applyFormat = siteConfig.friendLinkApplyFormat;
 
   const handleCopy = () => {
@@ -104,8 +105,8 @@ export default function FriendsBoard() {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="mt-14 md:mt-20 bg-white/40 dark:bg-slate-800/40 backdrop-blur-xl border border-white/50 dark:border-slate-700/50 rounded-2xl md:rounded-3xl p-5 md:p-8 max-w-3xl mx-auto text-center shadow-lg md:shadow-xl relative"
       >
-        <h2 className="text-lg md:text-2xl font-black text-slate-900 dark:text-white mb-2 md:mb-4 tracking-wider">
-          ✨ 建立神经连接
+        <h2 className="text-lg md:text-2xl font-black text-slate-900 dark:text-white mb-2 md:mb-4 tracking-wider flex items-center justify-center gap-2">
+          <Sparkles size={20} className="text-indigo-500" /> 建立神经连接
         </h2>
         <p className="text-xs md:text-base text-slate-600 dark:text-slate-400 font-serif mb-4 md:mb-6">
           欢迎各位大佬交换友链！请一键复制下方格式，通过邮件或社交平台联系我：

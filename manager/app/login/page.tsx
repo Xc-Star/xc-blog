@@ -3,7 +3,7 @@
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { LockKeyhole, Sparkles } from 'lucide-react';
+import { LockKeyhole, Sparkles, XCircle } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -70,14 +70,14 @@ export default function LoginPage() {
             />
           </label>
 
-          {error && <p className="rounded-2xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-xs font-bold text-red-500">❌ {error}</p>}
+          {error && <p className="rounded-2xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-xs font-bold text-red-500 flex items-center gap-2"><XCircle size={14} className="shrink-0" /> {error}</p>}
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-4 rounded-2xl bg-indigo-500 text-white text-sm font-black shadow-lg shadow-indigo-500/30 hover:bg-indigo-600 transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full py-4 rounded-2xl bg-indigo-500 text-white text-sm font-black shadow-lg shadow-indigo-500/30 hover:bg-indigo-600 transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            {isLoading ? '正在校验星钥...' : '✨ 解锁管理台'}
+            {isLoading ? '正在校验星钥...' : <><Sparkles size={16} /> 解锁管理台</>}
           </button>
         </form>
       </motion.section>

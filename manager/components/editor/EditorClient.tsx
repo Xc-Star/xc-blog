@@ -24,7 +24,7 @@ export default function EditorClient({ historyPostTags, historyChatterTags, hist
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<string | null>(null);
 
-  // 💡 图床状态路由：区分当前打开的图床是给谁用的
+  // 图床状态路由：区分当前打开的图床是给谁用的
   const [isImgToolOpen, setIsImgToolOpen] = useState(false);
   const [imgToolTarget, setImgToolTarget] = useState<'editor' | 'cover'>('editor');
 
@@ -59,10 +59,10 @@ export default function EditorClient({ historyPostTags, historyChatterTags, hist
     }
   }, []); // 仅组件挂载时执行一次，防止保存更新 ID 后死循环重复拉取
 
-  // 💾 真实物理落盘接口
+  // 真实物理落盘接口
   const handleSave = async (isPublish: boolean) => {
     if (!title.trim() && docType !== 'about') {
-      alert("⚠️ 请填写文章标题后再保存！");
+      alert("请填写文章标题后再保存！");
       return;
     }
 
@@ -91,8 +91,8 @@ export default function EditorClient({ historyPostTags, historyChatterTags, hist
       if (data.success) {
         setLastSaved(new Date().toLocaleTimeString());
 
-        // 👇 就是漏了这句！加上成功提示框！
-        alert("✅ 草稿保存成功！。");
+        // 就是漏了这句！加上成功提示框！
+        alert("草稿保存成功！。");
 
         // 如果是新文，保存后获得了真实的 ID，触发无感刷新
         if (currentDocId === 'new' && data.id) {
@@ -100,11 +100,11 @@ export default function EditorClient({ historyPostTags, historyChatterTags, hist
           window.history.replaceState(null, '', `/editor?id=${data.id}&type=${docType}`);
         }
       } else {
-        alert("❌ 保存失败: " + (data.message || JSON.stringify(data)));
+        alert("保存失败: " + (data.message || JSON.stringify(data)));
       }
     } catch (e) {
       console.error("落盘崩溃:", e);
-      alert("❌ 引擎连接失败，请检查 Python 后端是否启动！");
+      alert("引擎连接失败，请检查 Python 后端是否启动！");
     } finally {
       setIsSaving(false);
     }

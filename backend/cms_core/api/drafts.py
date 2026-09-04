@@ -166,7 +166,7 @@ async def sync_local_operations(request: Request):
         try:
             final_id = safe_slug(final_id)
         except Exception as e:
-            results.append(f"❌ 发布失败: {str(e)}")
+            results.append(f"发布失败: {str(e)}")
             continue
         raw_html = data.get("content", "")
         raw_html = re.sub(r"<p>&#12288;</p>", "<br><br>", raw_html)
@@ -211,7 +211,7 @@ async def sync_local_operations(request: Request):
                 execute("DELETE FROM drafts WHERE id=:id", id=safe_slug(doc_id))
             except Exception:
                 pass
-        results.append(f"✅ 已发布: {data.get('title', '')}")
+        results.append(f"已发布: {data.get('title', '')}")
     return {"success": True, "message": "\n".join(results)}
 
 

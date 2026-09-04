@@ -1,6 +1,7 @@
 "use client";
 
 import { useTheme } from './ThemeProvider';
+import { Flower2, Sparkles } from 'lucide-react';
 
 // 这里的 export default 非常关键！没有 default 就会报你那个错误
 export default function ThemeToggleBlock() {
@@ -19,11 +20,11 @@ export default function ThemeToggleBlock() {
           <div className={`absolute inset-0 transition-transform duration-700 ${isDark ? '-translate-y-full' : 'translate-y-0'} bg-gradient-to-tr from-sky-300 to-yellow-200`}></div>
           <div className={`absolute inset-0 transition-transform duration-700 ${isDark ? 'translate-y-0' : 'translate-y-full'} bg-gradient-to-tr from-indigo-900 to-slate-800`}></div>
 
-          <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-700 ${isDark ? 'opacity-0 rotate-90 scale-50' : 'opacity-100 rotate-0 scale-100'} text-3xl drop-shadow-md`}>
-            🌸
+          <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-700 ${isDark ? 'opacity-0 rotate-90 scale-50' : 'opacity-100 rotate-0 scale-100'} text-rose-500 drop-shadow-md`}>
+            <Flower2 size={30} />
           </div>
-          <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-700 ${isDark ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-50'} text-3xl drop-shadow-md`}>
-            ✨
+          <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-700 ${isDark ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-50'} text-amber-200 drop-shadow-md`}>
+            <Sparkles size={30} />
           </div>
        </div>
        <div className="text-center z-10 mt-auto">

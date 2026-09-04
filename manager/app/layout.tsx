@@ -17,7 +17,7 @@ import GlobalSnow from '../components/GlobalSnow';
 import { loadRuntime } from '../lib/content.server';
 import { RUNTIME_GLOBAL_KEY } from '../lib/runtimeStore';
 
-// 🌟 1. 引入 Next.js 官方脚本组件
+// 1. 引入 Next.js 官方脚本组件
 import Script from 'next/script';
 
 // 内容来自 MySQL，必须每次请求重新查询，管理端保存后才能立即生效。
@@ -40,7 +40,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     <html lang="zh-CN" className="h-full antialiased" suppressHydrationWarning>
       <head>
         <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: runtimeScript }} />
-        {/* 🌟 2. 这里的 CSS 逻辑保持原样，因为 style 标签在 React 中是受支持的 */}
+        {/* 2. 这里的 CSS 逻辑保持原样，因为 style 标签在 React 中是受支持的 */}
         <style
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
@@ -51,7 +51,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           }}
         />
 
-        {/* 🌟 3. 核心修复：使用 <Script> 组件替代原生 <script> */}
+        {/* 3. 核心修复：使用 <Script> 组件替代原生 <script> */}
         {/* strategy="beforeInteractive" 确保脚本在页面交互前执行，防止闪屏 */}
         <Script id="handle-splash-logic" strategy="beforeInteractive">
           {`

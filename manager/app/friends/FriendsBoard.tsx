@@ -6,7 +6,6 @@ import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import BackButton from '../../components/BackButton';
 import { friendsData as initialFriends, Friend } from '../../data/friends';
 import { Plus, Pencil, Trash2, AlertTriangle, Save, Edit3, X, CloudUpload, Sparkles } from 'lucide-react';
-import { useOperations } from '../../context/OperationContext';
 import { useToast } from '../../components/ToastProvider';
 import FloatingImageTool from '../../components/editor/FloatingImageTool';
 
@@ -25,7 +24,6 @@ const itemVariants: Variants = {
 };
 
 export default function FriendsBoard() {
-  const { addOperation } = useOperations();
   const { showToast } = useToast();
 
   const [editableFriends, setEditableFriends] = useState<Friend[]>(initialFriends);
@@ -54,14 +52,17 @@ export default function FriendsBoard() {
     setTimeout(() => setIsCopied(false), 2000);
   };
 
-  const syncToQueue = (nextList: Friend[]) => {
-    addOperation({
-      id: `sync_friends_${Date.now()}`,
-      type: "sync_friends",
-      label: "同步友链数据变更",
-      value: nextList
-    } as any);
-    showToast("📍 变更已加入待处理队列，请在 Navbar 点击更新本地", "info");
+  const syncToQueue = async (nextList: Friend[]) => {
+    try {
+      const data = await cmsJson<{ success: boolean; message?: string }>('/api/friends/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ friends: nextList })
+      });
+      showToast(data.success ? "✅ 友链已保存，前台已生效" : `❌ 保存失败：${data.message}`, data.success ? "success" : "error");
+    } catch (error: any) {
+      showToast(`❌ 保存失败：${error.message}`, "error");
+    }
   };
 
   const handleSaveFriend = () => {
@@ -148,7 +149,7 @@ export default function FriendsBoard() {
                </div>
                <div className="mt-8 flex gap-3">
                  <button onClick={() => setFriendModal({ ...friendModal, isOpen: false })} className="flex-1 py-3 text-slate-500 font-bold hover:text-slate-800 dark:hover:text-white transition-colors">取消</button>
-                 <button onClick={handleSaveFriend} className="flex-1 py-4 bg-indigo-500 text-white rounded-2xl font-black shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2 hover:bg-indigo-600 transition-colors"><Save size={18} /> 加入暂存</button>
+                 <button onClick={handleSaveFriend} className="flex-1 py-4 bg-indigo-500 text-white rounded-2xl font-black shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2 hover:bg-indigo-600 transition-colors"><Save size={18} /> 保存</button>
                </div>
             </motion.div>
           </div>

@@ -7,7 +7,6 @@ import PageTransition from '../../components/PageTransition';
 import { albums as initialAlbums, Album, Photo } from '../../data/albums';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Pencil, Trash2, Search, Image as ImageIcon, X, Save, AlertTriangle, Sparkles, Edit3, CloudUpload } from 'lucide-react';
-import { useOperations } from '../../context/OperationContext';
 import { useToast } from '../../components/ToastProvider';
 import FloatingImageTool from '../../components/editor/FloatingImageTool';
 
@@ -27,7 +26,6 @@ export default function PhotoWallPage() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  const { addOperation } = useOperations();
   const { showToast } = useToast();
   const [editableAlbums, setEditableAlbums] = useState<Album[]>(initialAlbums);
 
@@ -48,14 +46,17 @@ export default function PhotoWallPage() {
   const [isImgToolOpen, setIsImgToolOpen] = useState(false);
   const [imgToolTarget, setImgToolTarget] = useState<'album' | 'photo'>('album');
 
-  const syncToQueue = (newAlbums: Album[]) => {
-    addOperation({
-      id: `photowall_sync_${Date.now()}`,
-      type: "sync_photowall",
-      label: "同步画廊数据变更",
-      value: newAlbums
-    } as any);
-    showToast("📍 变更已加入待处理队列，请在 Navbar 点击更新本地", "info");
+  const syncToQueue = async (newAlbums: Album[]) => {
+    try {
+      const data = await cmsJson<{ success: boolean; message?: string }>('/api/gallery/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ albums: newAlbums })
+      });
+      showToast(data.success ? "✅ 画廊已保存，前台已生效" : `❌ 保存失败：${data.message}`, data.success ? "success" : "error");
+    } catch (error: any) {
+      showToast(`❌ 保存失败：${error.message}`, "error");
+    }
   };
 
   const { matchedAlbums, matchedPhotos } = useMemo(() => {
@@ -142,7 +143,7 @@ export default function PhotoWallPage() {
                     next = editableAlbums.map(a => a.id === albumModal.data.id ? albumModal.data : a);
                   }
                   setEditableAlbums(next); syncToQueue(next); setAlbumModal({ ...albumModal, isOpen: false });
-                }} className="flex-1 py-4 bg-indigo-500 text-white rounded-2xl font-black shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2 hover:bg-indigo-600 transition-colors"><Save size={18} /> 加入暂存</button>
+                }} className="flex-1 py-4 bg-indigo-500 text-white rounded-2xl font-black shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2 hover:bg-indigo-600 transition-colors"><Save size={18} /> 保存</button>
               </div>
             </motion.div>
           </div>
@@ -177,7 +178,7 @@ export default function PhotoWallPage() {
                   const next = [...editableAlbums];
                   setEditableAlbums(next); setCurrentAlbum({...album}); syncToQueue(next);
                   setPhotoModal({ ...photoModal, isOpen: false });
-                }} className="flex-1 py-4 bg-indigo-500 text-white rounded-2xl font-black shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2 hover:bg-indigo-600 transition-colors"><Save size={18} /> 加入暂存</button>
+                }} className="flex-1 py-4 bg-indigo-500 text-white rounded-2xl font-black shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2 hover:bg-indigo-600 transition-colors"><Save size={18} /> 保存</button>
               </div>
             </motion.div>
           </div>

@@ -22,4 +22,4 @@ def require_token(x_cms_token: str = Header(None)) -> None:
     if not CMS_TOKEN:
         return
     if not x_cms_token or not hmac.compare_digest(x_cms_token, CMS_TOKEN):
-        raise HTTPException(status_code=401, detail="\u672a\u6388\u6743")
+        raise HTTPException(status_code=401, detail="未授权")

@@ -3,7 +3,7 @@ import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '../ToastProvider';
 
-export default function BackgroundSection({ formData, handleUpdate, pushToQueue }: any) {
+export default function BackgroundSection({ formData, handleUpdate, saveConfig }: any) {
   const { showToast } = useToast();
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -108,9 +108,8 @@ export default function BackgroundSection({ formData, handleUpdate, pushToQueue 
           <h2 className="text-xl font-black text-slate-800 dark:text-white flex items-center gap-2">🌌 视觉背景配置</h2>
           <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase">管理网站的全局轮播背景图 ({formData.bgImages?.length || 0} 张)</p>
         </div>
-        {/* 👈 修复暂存参数：传入真正的 key 和 value */}
-        <button onClick={() => pushToQueue('视觉背景图', 'bgImages', formData.bgImages)} className="px-6 py-2 bg-indigo-500 text-white rounded-xl text-xs font-black shadow-lg shadow-indigo-500/20 active:scale-95 transition-all">
-          暂存背景修改
+        <button onClick={() => saveConfig('视觉背景图')} className="px-6 py-2 bg-indigo-500 text-white rounded-xl text-xs font-black shadow-lg shadow-indigo-500/20 active:scale-95 transition-all">
+          保存背景修改
         </button>
       </header>
 

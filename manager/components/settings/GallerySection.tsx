@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '../ToastProvider';
 
-export default function GallerySection({ formData, handleUpdate, pushToQueue }: any) {
+export default function GallerySection({ formData, handleUpdate, saveConfig }: any) {
   const { showToast } = useToast();
   const [isTesting, setIsTesting] = useState(false);
   const [testResult, setTestResult] = useState<{ success: boolean, msg: string } | null>(null);
@@ -20,7 +20,7 @@ export default function GallerySection({ formData, handleUpdate, pushToQueue }: 
 
     setIsTesting(true);
     setTestResult(null);
-    showToast("正在向图床服务器发送校验探针...", "info");
+    showToast("正在上传一张 1x1 测试图验证连通性...", "info");
 
     try {
       const data = await cmsJson<{ success: boolean; message: string }>('/api/picbed/test', {
@@ -46,13 +46,10 @@ export default function GallerySection({ formData, handleUpdate, pushToQueue }: 
 
   const handleSave = () => {
     if (!formData.picBedUrl || !formData.picBedToken) {
-      showToast("API 地址和 TOKEN 不能为空，无法暂存！", "error");
+      showToast("API 地址和 TOKEN 不能为空，无法保存！", "error");
       return;
     }
-    // 👈 三个参数全部推送到操作队列
-    pushToQueue('更新图床名称', 'picBedName', formData.picBedName);
-    pushToQueue('更新图床 API', 'picBedUrl', formData.picBedUrl);
-    pushToQueue('更新图床 Token', 'picBedToken', formData.picBedToken);
+    saveConfig('图床配置');
   };
 
   return (
@@ -86,7 +83,7 @@ export default function GallerySection({ formData, handleUpdate, pushToQueue }: 
           <label className="text-[10px] font-black text-slate-400 uppercase ml-1">API TOKEN (鉴权密钥)</label>
           <input
             type="password"
-            placeholder="输入 Bearer Token 或纯 Token"
+            placeholder="上传认证码或 API Token（需 upload 权限）"
             value={formData.picBedToken || ''}
             onChange={e => handleUpdate('picBedToken', e.target.value)}
             className="w-full bg-white/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm outline-none mt-1 text-slate-700 dark:text-slate-200"
@@ -109,7 +106,7 @@ export default function GallerySection({ formData, handleUpdate, pushToQueue }: 
             onClick={handleSave}
             className="flex-1 py-3 bg-indigo-500 text-white rounded-2xl text-sm font-black shadow-lg hover:bg-indigo-600 shadow-indigo-500/30 transition-all active:scale-95"
           >
-            暂存图床配置
+            保存图床配置
           </button>
         </div>
 

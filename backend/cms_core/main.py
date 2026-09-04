@@ -33,7 +33,7 @@ def get_status():
         db_status = "connected"
     except Exception:
         db_status = "error"
-    return {"status": "online", "message": "\u4e2d\u67a2\u795e\u7ecf\u5df2\u8fde\u63a5", "db": db_status}
+    return {"status": "online", "message": "中枢神经已连接", "db": db_status}
 
 
 protected = [Depends(require_token)]

@@ -47,8 +47,6 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       CMS_TOKEN: ${CMS_TOKEN:?请在 .env 中设置 CMS_TOKEN}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:?请在 .env 中设置 ADMIN_PASSWORD}
-      BLOG_REVALIDATE_URL: http://blog:3000/api/revalidate
-      REVALIDATE_TOKEN: ${REVALIDATE_TOKEN:-}
       CORS_ORIGINS: ${CORS_ORIGINS:-*}
       TZ: ${TZ:-Asia/Shanghai}
     depends_on:
@@ -71,7 +69,6 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE:-xhblogs}
       MYSQL_USER: ${MYSQL_USER:-xhblogs}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      REVALIDATE_TOKEN: ${REVALIDATE_TOKEN:-}
       TZ: ${TZ:-Asia/Shanghai}
     ports:
       - "${BLOG_PORT:-3000}:3000"

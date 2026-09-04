@@ -6,25 +6,25 @@ router = APIRouter()
 
 @router.get("/query/{song_id}")
 def query_netease_music(song_id: str):
-    """閫氳繃缃戞槗浜戝叕寮€鎺ュ彛鏌ヨ姝屾洸璇︽儏"""
-    print(f"\n[API] 馃幍 鏀跺埌鏌ヨ缃戞槗浜戦煶涔愯姹? ID: {song_id}")
+    """通过网易云公开接口查询歌曲详情"""
+    print(f"\n[API] 🎵 收到查询网易云音乐请求 ID: {song_id}")
     try:
         api_url = f"https://music.163.com/api/song/detail/?id={song_id}&ids=[{song_id}]"
         headers = {
-            # 浼寰楁洿鍍忕湡瀹炴祻瑙堝櫒
+            # 伪装得更像真实浏览器
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
             "Referer": "https://music.163.com/"
         }
         response = requests.get(api_url, headers=headers, timeout=5)
 
-        # 鎶?HTTP 鐘舵€佺爜鎵撳嚭鏉ワ紝濡傛灉鏄?403 灏辨槸琚綉鏄撲簯鎷︽埅浜?
-        print(f"[API] 馃摗 缃戞槗浜戝搷搴旂姸鎬佺爜: {response.status_code}")
+        # 把 HTTP 状态码打出来，如果是 403 就是被网易云拦截了
+        print(f"[API] 📡 网易云响应状态码: {response.status_code}")
 
         data = response.json()
 
         if data.get("songs") and len(data["songs"]) > 0:
             song = data["songs"][0]
-            print(f"[API] 鉁?鏌ヨ鎴愬姛: {song['name']} - {song['artists'][0]['name']}")
+            print(f"[API] ✅ 查询成功: {song['name']} - {song['artists'][0]['name']}")
             return {
                 "success": True,
                 "data": {
@@ -35,10 +35,10 @@ def query_netease_music(song_id: str):
                     "cover": song["album"]["picUrl"]
                 }
             }
-        print(f"[API] 鉂?鏌ユ棤姝ゆ瓕 (ID: {song_id})")
-        return {"success": False, "message": "鏈壘鍒拌姝屾洸锛屽彲鑳芥槸 VIP 姝屾洸鎴?ID 閿欒"}
+        print(f"[API] ❌ 查无此歌 (ID: {song_id})")
+        return {"success": False, "message": "未找到该歌曲，可能是 VIP 歌曲或 ID 错误"}
 
     except Exception as e:
-        # 銆愬叧閿€戯細鍦ㄧ粓绔噷鎶婄湡姝ｇ殑鎶ラ敊鍘熷洜鎵撳嵃鍑烘潵锛?
-        print(f"[API] 馃挜 缃戞槗浜戞帴鍙ｅ彂鐢熶弗閲嶉敊璇? {str(e)}")
-        return {"success": False, "message": f"鍚庣璇锋眰澶辫触: {str(e)}"}
+        # 【关键】：在终端里把真正的报错原因打印出来
+        print(f"[API] 💥 网易云接口发生严重错误: {str(e)}")
+        return {"success": False, "message": f"后端请求失败: {str(e)}"}

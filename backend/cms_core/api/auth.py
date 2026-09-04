@@ -108,26 +108,26 @@ def bootstrap_admin_user() -> None:
 async def verify_admin(payload: VerifyPayload, request: Request):
     key = _rate_key(payload.username, request)
     if _is_locked(key):
-        return {"success": False, "message": "\u767b\u5f55\u5931\u8d25\u6b21\u6570\u8fc7\u591a\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5"}
+        return {"success": False, "message": "登录失败次数过多，请稍后再试"}
     row = fetch_one("SELECT password_hash FROM admin_users WHERE username = :username", username=payload.username)
     ok = bool(row and verify_password(payload.password, row["password_hash"]))
     if not ok:
         _record_failure(key)
-        return {"success": False, "message": "\u7528\u6237\u540d\u6216\u5bc6\u7801\u9519\u8bef"}
+        return {"success": False, "message": "用户名或密码错误"}
     _clear_failures(key)
     execute("UPDATE admin_users SET last_login_at = :last_login_at WHERE username = :username", username=payload.username, last_login_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    return {"success": True, "message": "\u767b\u5f55\u6210\u529f"}
+    return {"success": True, "message": "登录成功"}
 
 
 @router.post("/change_password")
 async def change_password(payload: ChangePasswordPayload, request: Request):
     key = _rate_key(payload.username, request)
     if _is_locked(key):
-        return {"success": False, "message": "\u767b\u5f55\u5931\u8d25\u6b21\u6570\u8fc7\u591a\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5"}
+        return {"success": False, "message": "登录失败次数过多，请稍后再试"}
     row = fetch_one("SELECT password_hash FROM admin_users WHERE username = :username", username=payload.username)
     if not row or not verify_password(payload.old_password, row["password_hash"]):
         _record_failure(key)
-        return {"success": False, "message": "\u7528\u6237\u540d\u6216\u5bc6\u7801\u9519\u8bef"}
+        return {"success": False, "message": "用户名或密码错误"}
     execute("UPDATE admin_users SET password_hash = :password_hash WHERE username = :username", username=payload.username, password_hash=hash_password(payload.new_password))
     _clear_failures(key)
-    return {"success": True, "message": "\u5bc6\u7801\u5df2\u66f4\u65b0"}
+    return {"success": True, "message": "密码已更新"}

@@ -8,7 +8,7 @@ import yaml
 from fastapi import APIRouter, Request
 from markdownify import markdownify as md
 
-from cms_core.db import connection, execute, fetch_all, fetch_one, json_param, parse_json_column, safe_slug
+from cms_core.db import connection, execute, fetch_all, fetch_one, json_param, parse_json_column, safe_slug, to_mysql_datetime
 from sqlalchemy import text
 
 router = APIRouter()
@@ -47,7 +47,7 @@ async def save_draft(request: Request):
     try:
         payload = await request.json()
     except Exception:
-        return {"success": False, "message": "\u540e\u7aef\u65e0\u6cd5\u89e3\u6790\u4f20\u6765\u7684 JSON \u6570\u636e"}
+        return {"success": False, "message": "后端无法解析传来的 JSON 数据"}
     draft_id = payload.get("id")
     if not draft_id or draft_id == "new":
         draft_id = f"draft_{int(time.time() * 1000)}"
@@ -75,9 +75,9 @@ async def save_draft(request: Request):
             doc_date=payload.get("date", ""),
             last_modified=int(time.time() * 1000),
         )
-        return {"success": True, "message": "\u8349\u7a3f\u5df2\u5b89\u5168\u843d\u76d8", "id": draft_id}
+        return {"success": True, "message": "草稿已安全落盘", "id": draft_id}
     except Exception as e:
-        return {"success": False, "message": f"\u8349\u7a3f\u4fdd\u5b58\u5931\u8d25: {str(e)}"}
+        return {"success": False, "message": f"草稿保存失败: {str(e)}"}
 
 
 @router.post("/list")
@@ -91,11 +91,11 @@ async def get_draft(request: Request):
     try:
         payload = await request.json()
     except Exception:
-        return {"success": False, "message": "JSON \u89e3\u6790\u5931\u8d25"}
+        return {"success": False, "message": "JSON 解析失败"}
     try:
         raw_id = safe_slug(payload.get("id", ""))
     except Exception as e:
-        return {"success": False, "message": f"\u975e\u6cd5\u6587\u4ef6\u8def\u5f84: {str(e)}"}
+        return {"success": False, "message": f"非法文件路径: {str(e)}"}
     doc_type = payload.get("type", "post")
 
     row = fetch_one("SELECT * FROM drafts WHERE id = :id", id=raw_id)
@@ -107,7 +107,7 @@ async def get_draft(request: Request):
         if page:
             html_content = markdown.markdown(page.get("content") or "", extensions=["fenced_code", "tables", "nl2br"])
             return {"success": True, "draft": {
-                "id": "about", "type": "about", "title": page.get("title") or "\u5173\u4e8e\u6211", "content": html_content,
+                "id": "about", "type": "about", "title": page.get("title") or "关于我", "content": html_content,
                 "tags": [], "cover": page.get("cover") or "", "description": "", "mood": "", "date": ""
             }}
     else:
@@ -129,7 +129,7 @@ async def get_draft(request: Request):
                 "mood": doc.get("mood") or "",
                 "date": _format_datetime(doc.get("published_at")),
             }}
-    return {"success": False, "message": "\u672a\u627e\u5230\u76f8\u5173\u6587\u4ef6"}
+    return {"success": False, "message": "未找到相关文件"}
 
 
 @router.post("/delete")
@@ -137,18 +137,18 @@ async def delete_draft(request: Request):
     try:
         payload = await request.json()
     except Exception:
-        return {"success": False, "message": "JSON \u89e3\u6790\u5931\u8d25"}
+        return {"success": False, "message": "JSON 解析失败"}
     try:
         raw_id = safe_slug(payload.get("id", ""))
     except Exception as e:
-        return {"success": False, "message": f"\u975e\u6cd5\u6587\u4ef6\u8def\u5f84: {str(e)}"}
+        return {"success": False, "message": f"非法文件路径: {str(e)}"}
     deleted = 0
     with connection() as conn:
         deleted += conn.execute(text("DELETE FROM drafts WHERE id=:id"), {"id": raw_id}).rowcount
         deleted += conn.execute(text("DELETE FROM documents WHERE slug=:slug"), {"slug": raw_id}).rowcount
     if deleted > 0:
-        return {"success": True, "message": "\u5df2\u5f7b\u5e95\u9500\u6bc1\u76f8\u5173\u6587\u4ef6"}
-    return {"success": False, "message": "\u672a\u627e\u5230\u76f8\u5173\u6587\u4ef6"}
+        return {"success": True, "message": "已彻底销毁相关文件"}
+    return {"success": False, "message": "未找到相关文件"}
 
 
 @router.post("/sync_local")
@@ -166,7 +166,7 @@ async def sync_local_operations(request: Request):
         try:
             final_id = safe_slug(final_id)
         except Exception as e:
-            results.append(f"\u274c \u53d1\u5e03\u5931\u8d25: {str(e)}")
+            results.append(f"❌ 发布失败: {str(e)}")
             continue
         raw_html = data.get("content", "")
         raw_html = re.sub(r"<p>&#12288;</p>", "<br><br>", raw_html)
@@ -204,14 +204,14 @@ async def sync_local_operations(request: Request):
                 mood=data.get("mood", ""),
                 tags=json_param(data.get("tags", [])),
                 content=md_content,
-                published_at=final_date,
+                published_at=to_mysql_datetime(final_date),
             )
         if doc_id:
             try:
                 execute("DELETE FROM drafts WHERE id=:id", id=safe_slug(doc_id))
             except Exception:
                 pass
-        results.append(f"\u2705 \u5df2\u53d1\u5e03: {data.get('title', '')}")
+        results.append(f"✅ 已发布: {data.get('title', '')}")
     return {"success": True, "message": "\n".join(results)}
 
 

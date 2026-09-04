@@ -1,6 +1,5 @@
 import 'katex/dist/katex.min.css';
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Serif_SC } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "../components/ThemeProvider";
 import BackgroundEffects from "../components/BackgroundEffects";
@@ -21,16 +20,6 @@ import { RUNTIME_GLOBAL_KEY } from '../lib/runtimeStore';
 // 内容来自 MySQL，必须每次请求重新查询，管理端保存后才能立即生效。
 export const dynamic = 'force-dynamic';
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
-
-const notoSerif = Noto_Serif_SC({
-  subsets: ["latin"],
-  weight: ["400", "700", "900"],
-  variable: "--font-serif",
-  display: 'swap',
-});
-
 export async function generateMetadata(): Promise<Metadata> {
   await loadRuntime();
   return {
@@ -49,7 +38,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const runtimeScript = `globalThis[${JSON.stringify(RUNTIME_GLOBAL_KEY)}]=${JSON.stringify(runtime).replace(/</g, '\\u003c')};`;
 
   return (
-    <html lang="zh-CN" className={`${geistSans.variable} ${geistMono.variable} ${notoSerif.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang="zh-CN" className="h-full antialiased" suppressHydrationWarning>
       <head>
         {/* 运行时配置注入：必须排在所有客户端组件水合之前 */}
         <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: runtimeScript }} />

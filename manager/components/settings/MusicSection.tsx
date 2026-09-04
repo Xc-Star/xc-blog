@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function MusicSection({ formData, handleUpdate, pushToQueue, musicDetails, queryMusic, queryLoading, queryResult, confirmAddMusic, removeSong }: any) {
+export default function MusicSection({ formData, handleUpdate, saveConfig, musicDetails, queryMusic, queryLoading, queryResult, confirmAddMusic, removeSong }: any) {
   return (
     <motion.section initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xl border border-white/50 dark:border-slate-800/50 rounded-[40px] p-8 shadow-2xl">
       <h2 className="text-xl font-black text-slate-800 dark:text-white mb-8">🎵 歌单管理与查询</h2>
@@ -63,10 +63,10 @@ export default function MusicSection({ formData, handleUpdate, pushToQueue, musi
 
           {/* 【核心修复】：加上了真正的更新 key (cloudMusicIds) 和新数组 */}
           <button
-            onClick={() => pushToQueue('网易云歌单', 'cloudMusicIds', formData.cloudMusicIds)}
+            onClick={() => saveConfig('网易云歌单')}
             className="w-full py-4 bg-indigo-500 text-white rounded-2xl text-sm font-black shadow-xl mt-4 active:scale-95 transition-all"
           >
-            暂存音乐修改
+            保存音乐修改
           </button>
         </div>
       </div>

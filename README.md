@@ -68,7 +68,6 @@ openssl rand -hex 32
 | `ADMIN_PASSWORD` | ✅ | 管理端登录密码；首次启动时写入 `admin_users` 表 |
 | `SESSION_SECRET` | ✅ | 管理端会话 Cookie 的 HMAC 签名密钥 |
 | `CMS_TOKEN` | ✅ | 管理端调用后端 API 的内部令牌 |
-| `REVALIDATE_TOKEN` | | 后端通知博客刷新缓存的令牌，留空则不校验 |
 | `COOKIE_SECURE` | | 会话 Cookie 是否加 `Secure`。纯 HTTP 访问保持 `false`；挂了 HTTPS 反代后改 `true` |
 | `BLOG_PORT` / `MANAGER_PORT` | | 对外端口，默认 3000 / 3001 |
 | `TZ` | | 时区，默认 `Asia/Shanghai` |

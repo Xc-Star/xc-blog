@@ -10,7 +10,6 @@ import FloatingImageTool from '../../components/editor/FloatingImageTool';
 import PageTransition from '../../components/PageTransition';
 import { ArrowLeft, AlertTriangle, Save, LogOut } from 'lucide-react';
 import { useToast } from '../../components/ToastProvider';
-import { useOperations } from '../../context/OperationContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // 🌟 核心修改 1：把原本暴露的主函数改名为 EditorContent（不带 export default）
@@ -18,7 +17,6 @@ function EditorContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { showToast } = useToast();
-  const { addOperation } = useOperations();
 
   const [docType, setDocType] = useState<string>(searchParams.get('type') || 'post');
   const [currentDocId, setCurrentDocId] = useState(
@@ -132,15 +130,25 @@ function EditorContent() {
     };
 
     if (isPublish) {
-      addOperation({
-        id: `publish_${Date.now()}`,
-        type: "publish_article",
-        label: `发布: ${title || '无标题'}`,
-        value: payload
-      } as any);
-      setHasUnsavedChanges(false);
-      showToast("🚀 已加入待处理队列！", "info");
-      if (shouldExitAfterSave) router.back();
+      setIsSaving(true);
+      try {
+        const data = await cmsJson<{ success: boolean; message?: string }>('/api/drafts/sync_local', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ operations: [{ type: 'publish_article', value: payload }] })
+        });
+        if (!data.success) {
+          showToast(`❌ 发布失败：${data.message}`, "error");
+          return;
+        }
+        setHasUnsavedChanges(false);
+        showToast("🚀 已发布，前台已生效", "success");
+        if (shouldExitAfterSave) router.back();
+      } catch (error: any) {
+        showToast(`❌ 发布失败：${error.message}`, "error");
+      } finally {
+        setIsSaving(false);
+      }
       return;
     }
 

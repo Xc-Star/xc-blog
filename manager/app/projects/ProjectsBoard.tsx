@@ -6,11 +6,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import BackButton from '../../components/BackButton';
 import { projectsData as initialProjects, Project } from '../../data/projects';
 import { Plus, Pencil, Trash2, AlertTriangle, Save, Edit3, X, Sparkles, Code2 } from 'lucide-react';
-import { useOperations } from '../../context/OperationContext';
 import { useToast } from '../../components/ToastProvider';
 
 export default function ProjectsBoard() {
-  const { addOperation } = useOperations();
   const { showToast } = useToast();
 
   // 1. 核心状态
@@ -42,15 +40,17 @@ export default function ProjectsBoard() {
     );
   }, [searchQuery, editableProjects]);
 
-  // --- 核心逻辑：加入暂存队列 ---
-  const syncToQueue = (nextList: Project[]) => {
-    addOperation({
-      id: `sync_projects_${Date.now()}`,
-      type: "sync_projects",
-      label: "同步项目矩阵变更",
-      value: nextList
-    } as any);
-    showToast("📍 变更已加入待处理队列，请在 Navbar 点击更新本地", "info");
+  const syncToQueue = async (nextList: Project[]) => {
+    try {
+      const data = await cmsJson<{ success: boolean; message?: string }>('/api/projects/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projects: nextList })
+      });
+      showToast(data.success ? "✅ 项目已保存，前台已生效" : `❌ 保存失败：${data.message}`, data.success ? "success" : "error");
+    } catch (error: any) {
+      showToast(`❌ 保存失败：${error.message}`, "error");
+    }
   };
 
   const handleSaveProject = () => {
@@ -133,7 +133,7 @@ export default function ProjectsBoard() {
                </div>
                <div className="mt-8 flex gap-3">
                  <button onClick={() => setProjectModal({ ...projectModal, isOpen: false })} className="flex-1 py-3 text-slate-500 font-bold uppercase text-xs">取消</button>
-                 <button onClick={handleSaveProject} className="flex-1 py-4 bg-indigo-500 text-white rounded-2xl font-black shadow-lg flex items-center justify-center gap-2"><Save size={18} /> 加入暂存</button>
+                 <button onClick={handleSaveProject} className="flex-1 py-4 bg-indigo-500 text-white rounded-2xl font-black shadow-lg flex items-center justify-center gap-2"><Save size={18} /> 保存</button>
                </div>
             </motion.div>
           </div>

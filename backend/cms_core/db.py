@@ -2,6 +2,7 @@ import json
 import os
 import time
 from contextlib import contextmanager
+from datetime import datetime
 from typing import Any
 from urllib.parse import quote_plus
 
@@ -85,10 +86,29 @@ def json_param(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False)
 
 
+def to_mysql_datetime(value: Any) -> str | None:
+    """把前端的 ISO8601（含 T/Z）等写法转成 MySQL DATETIME；带时区的按容器本地时区落库。"""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        dt = value
+    else:
+        raw = str(value).strip()
+        if not raw:
+            return None
+        try:
+            dt = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+        except ValueError:
+            return raw
+    if dt.tzinfo is not None:
+        dt = dt.astimezone().replace(tzinfo=None)
+    return dt.strftime("%Y-%m-%d %H:%M:%S")
+
+
 def safe_slug(value: str) -> str:
     value = (value or "").replace(".md", "").replace(".json", "")
     if any(part in value for part in ("/", "\\", "..")):
-        raise ValueError("\u975e\u6cd5\u6807\u8bc6")
+        raise ValueError("非法标识")
     return value
 
 

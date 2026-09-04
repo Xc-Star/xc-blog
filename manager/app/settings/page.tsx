@@ -3,7 +3,6 @@ import { cmsJson } from '@/lib/cmsApi';
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useOperations } from '../../context/OperationContext';
 import { siteConfig } from '../../siteConfig';
 import Navbar from '../../components/Navbar';
 import PageTransition from '../../components/PageTransition';
@@ -22,8 +21,10 @@ import FooterSection from '../../components/settings/FooterSection';
 import AICatSection from '../../components/settings/AICatSection';
 import PasswordSection from '../../components/settings/PasswordSection';
 
+// 输入框的临时状态，不属于站点配置；带上会被后端字段白名单整体拒绝
+const LOCAL_ONLY_FIELDS = ['newMusicId', 'newBgUrl'];
+
 function SettingsContent() {
-  const { operations, addOperation } = useOperations();
   const [activeTab, setActiveTab] = useState('profile');
   const { showToast } = useToast();
 
@@ -165,18 +166,23 @@ function SettingsContent() {
     }
   };
 
-  const pushToQueue = (label: string, key?: string, value?: any) => {
-    addOperation({
-      id: Date.now().toString(),
-      type: 'CONFIG',
-      label: `配置暂存：${label}`,
-      description: `修改了系统的 ${label}，等待同步至 my-blog`,
-      timestamp: new Date().toLocaleTimeString().slice(0, 5),
-      payload: formData,
-      key: key,
-      value: value
-    } as any);
-    showToast(`🎉 【${label}】已加入右上角操作队列！`, "success");
+  const saveConfig = async (label: string) => {
+    const updates = { ...formData };
+    LOCAL_ONLY_FIELDS.forEach(field => delete updates[field]);
+    try {
+      const data = await cmsJson<{ success: boolean; message?: string }>('/api/config/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ updates })
+      });
+      if (data.success) {
+        showToast(`✅ 【${label}】已保存，前台已生效`, "success");
+      } else {
+        showToast(`❌ 保存失败：${data.message}`, "error");
+      }
+    } catch (error: any) {
+      showToast(`❌ 保存失败：${error.message}`, "error");
+    }
   };
 
   // 👇 🌟 在菜单里增加 AI 猫咪入口
@@ -222,16 +228,16 @@ function SettingsContent() {
 
           <div className="flex-1 w-full">
             <AnimatePresence mode="wait">
-              {activeTab === 'profile' && <ProfileSection key="profile" formData={formData} handleUpdate={handleUpdate} pushToQueue={pushToQueue} />}
+              {activeTab === 'profile' && <ProfileSection key="profile" formData={formData} handleUpdate={handleUpdate} saveConfig={saveConfig} />}
               {activeTab === 'display' && <DisplaySection key="display" />}
-              {activeTab === 'background' && <BackgroundSection key="background" formData={formData} handleUpdate={handleUpdate} pushToQueue={pushToQueue} />}
-              {activeTab === 'music' && <MusicSection key="music" formData={formData} handleUpdate={handleUpdate} pushToQueue={pushToQueue} musicDetails={musicDetails} queryMusic={queryMusic} queryLoading={queryLoading} queryResult={queryResult} confirmAddMusic={confirmAddMusic} removeSong={removeSong} />}
-              {activeTab === 'gallery' && <GallerySection key="gallery" formData={formData} handleUpdate={handleUpdate} pushToQueue={pushToQueue} />}
-              {activeTab === 'footer' && <FooterSection key="footer" formData={formData} handleUpdate={handleUpdate} pushToQueue={pushToQueue} />}
-              {activeTab === 'danmaku' && <DanmakuSection key="danmaku" formData={formData} handleUpdate={handleUpdate} pushToQueue={pushToQueue} />}
-              {activeTab === 'comment' && <CommentSection key="comment" formData={formData} handleUpdate={handleUpdate} pushToQueue={pushToQueue} />}
+              {activeTab === 'background' && <BackgroundSection key="background" formData={formData} handleUpdate={handleUpdate} saveConfig={saveConfig} />}
+              {activeTab === 'music' && <MusicSection key="music" formData={formData} handleUpdate={handleUpdate} saveConfig={saveConfig} musicDetails={musicDetails} queryMusic={queryMusic} queryLoading={queryLoading} queryResult={queryResult} confirmAddMusic={confirmAddMusic} removeSong={removeSong} />}
+              {activeTab === 'gallery' && <GallerySection key="gallery" formData={formData} handleUpdate={handleUpdate} saveConfig={saveConfig} />}
+              {activeTab === 'footer' && <FooterSection key="footer" formData={formData} handleUpdate={handleUpdate} saveConfig={saveConfig} />}
+              {activeTab === 'danmaku' && <DanmakuSection key="danmaku" formData={formData} handleUpdate={handleUpdate} saveConfig={saveConfig} />}
+              {activeTab === 'comment' && <CommentSection key="comment" formData={formData} handleUpdate={handleUpdate} saveConfig={saveConfig} />}
               {/* 👇 🌟 挂载 AI 猫咪面板 */}
-              {activeTab === 'aicat' && <AICatSection key="aicat" formData={formData} handleUpdate={handleUpdate} pushToQueue={pushToQueue} />}
+              {activeTab === 'aicat' && <AICatSection key="aicat" formData={formData} handleUpdate={handleUpdate} saveConfig={saveConfig} />}
               {activeTab === 'password' && <PasswordSection key="password" />}
 
               {activeTab === 'repo' && <RepoSection key="repo" />}

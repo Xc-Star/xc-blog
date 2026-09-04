@@ -5,10 +5,10 @@ import { Save, Key, User, GitBranch, Shield } from 'lucide-react';
 interface CommentSectionProps {
   formData: any;
   handleUpdate: (field: string, value: any) => void;
-  pushToQueue: (label: string, key?: string, value?: any) => void;
+  saveConfig: (label: string) => Promise<void>;
 }
 
-export default function CommentSection({ formData, handleUpdate, pushToQueue }: CommentSectionProps) {
+export default function CommentSection({ formData, handleUpdate, saveConfig }: CommentSectionProps) {
   // 安全地获取 Gitalk 配置，防止一开始 undefined 报错
   const gitalk = formData.gitalkConfig || {
     clientID: '',
@@ -23,7 +23,7 @@ export default function CommentSection({ formData, handleUpdate, pushToQueue }: 
   };
 
   const saveToQueue = () => {
-    pushToQueue('Gitalk 评论系统', 'gitalkConfig', gitalk);
+    saveConfig('Gitalk 评论系统');
   };
 
   return (
